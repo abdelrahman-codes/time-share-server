@@ -1,0 +1,50 @@
+{
+  "name": "rv-server",
+  "version": "1.0.0",
+  "description": "Backend Server Side is a nodejs project that uses express framework to develop REST-APIs that communicate with MongoDB Through Mongoose library.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "format": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "author": "happy-nation",
+  "license": "ISC",
+  "dependencies": {
+    "@supercharge/fs": "^3.4.2",
+    "axios": "^1.7.4",
+    "bcrypt": "^5.1.0",
+    "child_process": "^1.0.2",
+    "cors": "^2.8.5",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.0.3",
+    "excel4node": "^1.8.2",
+    "express": "^4.18.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.2.0",
+    "helmet": "^7.1.0",
+    "joi": "^17.9.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.2",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.2",
+    "node-mailjet": "^6.0.5",
+    "nodemailer": "^6.9.1",
+    "qrcode": "^1.5.4",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "nodemon": "^2.0.21",
+    "prettier": "^3.3.2"
+  },
+  "lint-staged": {
+    "**/*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
