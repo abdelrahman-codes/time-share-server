@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "format": "prettier --write .",
-    "postinstall": "husky install"
+    "format": "prettier --write ."
   },
   "author": "happy-nation",
   "license": "ISC",
