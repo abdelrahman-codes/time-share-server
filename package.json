@@ -8,7 +8,7 @@
     "dev": "nodemon index.js",
     "format": "prettier --write ."
   },
-  "author": "happy-nation",
+  "author": "Abdelrahman Abdallah",
   "license": "ISC",
   "dependencies": {
     "@supercharge/fs": "^3.4.2",
