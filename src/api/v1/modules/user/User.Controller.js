@@ -3,9 +3,9 @@ const UserService = require('./User.Service');
 class UserController {
   async createUser(req, res, next) {
     try {
-      const data = await UserService.createUser(req.body, next);
+      const { password, ...result } = await UserService.createUser(req.body);
       logger.info('User created');
-      return res.status(200).json({ message: 'success', success: true, data });
+      return res.sendResponse(result);
     } catch (error) {
       next(error);
     }
@@ -13,8 +13,20 @@ class UserController {
 
   async get(req, res, next) {
     try {
-      const users = await UserService.getAll();
+      let { searchTerm } = req.query;
+      if (!searchTerm) searchTerm = '';
+      const users = await UserService.getAll(searchTerm);
       return res.sendResponse(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updateUser(req, res, next) {
+    try {
+      let _id = req?.token?.sub || req.params._id;
+      const { password, ...result } = await UserService.updateUser(_id, req.body);
+      logger.info('User updated');
+      return res.sendResponse(result);
     } catch (error) {
       next(error);
     }

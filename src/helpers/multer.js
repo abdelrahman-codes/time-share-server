@@ -5,12 +5,13 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const Fs = require('@supercharge/fs');
+const ErrorHandler = require('../enums/errors');
 
 // Dynamic storage engine
 const getStorage = (destinationPath, isCv = false) => {
   return multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, destinationPath)
+      cb(null, destinationPath);
     },
     filename: function (req, file, cb) {
       let ext = file.mimetype.split('/')[1];
@@ -33,7 +34,7 @@ function checkImageType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Only images are allowed'));
+    cb(ErrorHandler.badRequest('Only images are allowed'));
   }
 }
 
@@ -46,7 +47,7 @@ function checkDocsType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Documents Only (PDF, DOC, DOCX, XLS, XLSX)!'));
+    cb(ErrorHandler.badRequest('Documents Only (PDF, DOC, DOCX, XLS, XLSX)!'));
   }
 }
 

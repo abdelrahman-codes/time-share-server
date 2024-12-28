@@ -5,7 +5,9 @@ router.get('/', function (req, res) {
 });
 
 const user = require('./user/User.Routes');
+const auth = require('./auth/Auth.Routes');
 
+router.use('/auth', auth);
 router.use('/user', user);
 
 module.exports = router;

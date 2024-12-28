@@ -13,17 +13,11 @@ module.exports = (allowedRoles) => {
     jwt.verify(token, process.env.TOKEN_SECRET_KEY, async (err, decoded) => {
       if (err) return next(ErrorHandler.unauthorized());
       if (!allowedRoles.includes(decoded.role)) return next(ErrorHandler.unauthorized());
-
-      switch (decoded.role) {
-        case Roles.User:
-          const user = await User.findOne({ _id: decoded.sub });
-          if (!user) return next(ErrorHandler.unauthorized('User no longer exists'));
-          if (!user.active) return next(ErrorHandler.dynamicError(401, 'Your account is inactive', 'Unauthorized'));
-          req.token = decoded;
-          return next();
-        default:
-          return next(ErrorHandler.unauthorized());
-      }
+      const user = await User.findOne({ _id: decoded.sub });
+      if (!user) return next(ErrorHandler.unauthorized('User no longer exists'));
+      if (!user.active) return next(ErrorHandler.dynamicError(401, 'Your account is inactive', 'Unauthorized'));
+      req.token = decoded;
+      return next();
     });
   };
 };

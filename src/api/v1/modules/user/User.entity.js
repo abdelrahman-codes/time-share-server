@@ -4,14 +4,18 @@ const Roles = require('../../../../enums/roles');
 
 const userSchema = mongoose.Schema(
   {
+    firstName: { type: String, trim: true },
+    lastName: { type: String, trim: true },
     name: { type: String, trim: true },
-    email: { type: String, trim: true, unique: true, index: true, required: true },
+    username: { type: String, trim: true, unique: true, index: true },
+    email: { type: String, trim: true },
     password: { type: String, trim: true },
-    phone: { type: String, trim: true, unique: true },
+    mobile: { type: String, trim: true },
+    rule: { type: String, trim: true },
 
     dob: { type: Date },
     gender: { type: String },
-    profileImage: { type: String, trim: true },
+    url: { type: String, trim: true, default: null },
 
     // profile privacy setting
     otp: { type: Number },
@@ -31,6 +35,7 @@ userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, Number(process.env.SALT_ROUNDS));
   }
+  this.name = `${this.firstName} ${this.lastName}`;
   // Generate a new OTP for user registration
   this.otp = Math.floor(1000 + Math.random() * 9000);
   next();
@@ -41,6 +46,16 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   if (update.password) {
     update.password = await bcrypt.hash(update.password, Number(process.env.SALT_ROUNDS));
   }
+  if (update.firstName || update.lastName) {
+    const query = this.getQuery();
+    const docToUpdate = await this.model.findOne(query).exec();
+
+    const firstName = update.firstName || docToUpdate.firstName;
+    const lastName = update.lastName || docToUpdate.lastName;
+
+    update.name = `${firstName || ''} ${lastName || ''}`.trim();
+  }
+
   update.otp = Math.floor(1000 + Math.random() * 9000);
   next();
 });

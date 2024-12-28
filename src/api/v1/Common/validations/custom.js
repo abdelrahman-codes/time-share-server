@@ -1,7 +1,7 @@
 const { Types } = require('mongoose');
 
 const isValidObjectId = (value, helper) => {
-  return Types.ObjectId.isValid(value) ? true : helper.message('Invalid ObjectId');
+  return Types.ObjectId.isValid(value) ? true : helper.message('Invalid id');
 };
 
 const email = (value, helpers) => {

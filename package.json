@@ -32,6 +32,7 @@
     "node-mailjet": "^6.0.5",
     "nodemailer": "^6.9.1",
     "qrcode": "^1.5.4",
+    "uuid": "^11.0.3",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
