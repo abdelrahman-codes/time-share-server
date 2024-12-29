@@ -21,9 +21,19 @@ class UserController {
       next(error);
     }
   }
+
+  async getDetails(req, res, next) {
+    try {
+      let _id = req?.params?._id || req?.token?.sub;
+      const user = await UserService.getDetails(_id);
+      return res.sendResponse(user);
+    } catch (error) {
+      next(error);
+    }
+  }
   async updateUser(req, res, next) {
     try {
-      let _id = req?.token?.sub || req.params._id;
+      let _id = req.params._id || req?.token?.sub;
       const { password, ...result } = await UserService.updateUser(_id, req.body);
       logger.info('User updated');
       return res.sendResponse(result);

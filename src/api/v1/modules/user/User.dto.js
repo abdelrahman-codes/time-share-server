@@ -32,8 +32,24 @@ const updateUserDto = {
     .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'role', 'pic')
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };
+const updateMyProfileDto = {
+  body: Joi.object()
+    .keys({
+      pic: Joi.string().optional(),
+      firstName: Joi.string().optional(),
+      lastName: Joi.string().optional(),
+      mobile: Joi.string().optional(),
+      email: Joi.string().custom(email).optional(),
+      rule: Joi.string().optional(),
+      password: Joi.string().custom(password).optional(),
+      role: Joi.string().optional().valid(Roles.Owner, Roles.Admin),
+    })
+    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'role', 'pic')
+    .messages({ 'object.missing': 'At least one update field must be provided' }),
+};
 
 module.exports = {
   createUserDto,
   updateUserDto,
+  updateMyProfileDto,
 };

@@ -26,6 +26,13 @@ class UserService {
       .select('name url role active username')
       .sort('-createdAt');
   }
+  async getDetails(_id) {
+    const user = await User.findOne({ role: { $ne: Roles.User }, _id })
+      .select('firstName lastName mobile url role rule active username email')
+      .sort('-createdAt');
+    if (!user) throw ErrorHandler.notFound('User not found');
+    return user;
+  }
   async updateUser(_id, data) {
     if (data?.pic) data.url = process.env.BASE_URL + data.pic;
     if (data?.mobile) {

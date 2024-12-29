@@ -12,6 +12,13 @@ router.post(
   UserController.createUser,
 );
 router.put(
+  '/',
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member]),
+  MulterMiddleware('single', './public/media', 'image', 'pic'),
+  ValidationMiddleware(UserDto.updateMyProfileDto),
+  UserController.updateUser,
+);
+router.put(
   '/:_id',
   AuthMiddleware(Roles.Owner),
   MulterMiddleware('single', './public/media', 'image', 'pic'),
@@ -19,5 +26,7 @@ router.put(
   UserController.updateUser,
 );
 router.get('/', AuthMiddleware(Roles.Owner), UserController.get);
+router.get('/details', AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member]), UserController.getDetails);
+router.get('/details/:_id', AuthMiddleware(Roles.Owner), UserController.getDetails);
 
 module.exports = router;
