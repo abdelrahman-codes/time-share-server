@@ -52,5 +52,13 @@ class UserService {
 
     return user.toObject();
   }
+  async toggleActiveStatus(_id) {
+    const user = await User.findOne({ _id, role: { $ne: Roles.User } });
+    if (!user) throw ErrorHandler.notFound('User not found');
+    const updated = await User.findOneAndUpdate({ _id, role: { $ne: Roles.User } }, { active: !user.active });
+    if (!updated)
+      throw ErrorHandler.internalServerError('An error occurred while updating the resource. Please try again later.');
+    return `User is now ${updated.active ? 'inactive' : 'active'}.`;
+  }
 }
 module.exports = new UserService(User);

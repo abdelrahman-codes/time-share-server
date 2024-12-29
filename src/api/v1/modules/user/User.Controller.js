@@ -41,6 +41,15 @@ class UserController {
       next(error);
     }
   }
+  async toggleActiveStatus(req, res, next) {
+    try {
+      const { _id } = req.params;
+      const result = await UserService.toggleActiveStatus(_id);
+      return res.sendResponse(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new UserController();
