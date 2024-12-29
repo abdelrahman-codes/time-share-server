@@ -4,3 +4,4 @@ module.exports.LimiterMiddleware = require('./rate-limiter');
 module.exports.MulterMiddleware = require('./multer');
 module.exports.ValidationMiddleware = require('./validation');
 module.exports.ResponseMiddleware = require('./response');
+module.exports.NormalizeTextMiddleware = require('./normalize-text');

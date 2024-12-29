@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const V1Routes = require('./api/v1/modules/index');
-const { ErrorMiddleware, LimiterMiddleware, ResponseMiddleware } = require('./middlewares/index');
+const { ErrorMiddleware, LimiterMiddleware, ResponseMiddleware, NormalizeTextMiddleware } = require('./middlewares/index');
 const ErrorHandler = require('./enums/errors');
 const logger = require('./config/logger');
 
@@ -26,6 +26,7 @@ app.use(cors());
 // sanitize request data
 app.use(mongoSanitize());
 
+app.use(NormalizeTextMiddleware);
 // Common response handler
 app.use(ResponseMiddleware);
 

@@ -35,7 +35,8 @@ const uploadMiddleware = (uploadType, storagePath, fileType, fieldName, maxCount
     }
 
     multerUpload(req, res, (err) => {
-      if (err) return res.status(400).json({ success: false, statusCode: 400, message: err.message, error: 'Invalid input' });
+      if (err)
+        return res.status(400).json({ success: false, statusCode: 400, message: err.message, error: 'Invalid input' });
 
       if (req.file) {
         req.body[fieldName] = req.file.filename;
@@ -47,6 +48,18 @@ const uploadMiddleware = (uploadType, storagePath, fileType, fieldName, maxCount
             if (fieldName[index]?.maxCount == 1) req.body[key] = req.files[key][0].filename;
             else req.body[key] = req.files[key].map((file) => file.filename);
           });
+        }
+      }
+      // Normalize form-data fields in req.body
+      for (const key in req.body) {
+        if (typeof req.body[key] === 'string') {
+          req.body[key] = req.body[key]
+            .trim()
+            .replace(/ى/g, 'ي')
+            .replace(/أ/g, 'ا')
+            .replace(/إ/g, 'ا')
+            .replace(/آ/g, 'ا')
+            .replace(/ة/g, 'ه');
         }
       }
 
