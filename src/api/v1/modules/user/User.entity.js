@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema(
     forgetCode: { type: Number },
     forgetPassword: { type: Boolean, default: false },
     emailVerified: { type: Boolean, default: false },
-    role: { type: String, default: Roles.User },
+    role: { type: String, default: Roles.Lead },
     active: { type: Boolean, default: true },
   },
   {

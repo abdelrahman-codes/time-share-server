@@ -1,10 +1,12 @@
 const logger = require('../../../../config/logger');
+const PermissionService = require('../permission/Permission.Service');
 const UserService = require('./User.Service');
 class UserController {
   async createUser(req, res, next) {
     try {
       const { password, ...result } = await UserService.createUser(req.body);
       logger.info('User created');
+      await PermissionService.initializePermissions(result._id);
       return res.sendResponse(result);
     } catch (error) {
       next(error);

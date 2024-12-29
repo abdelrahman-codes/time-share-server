@@ -22,12 +22,12 @@ class UserService {
     return newUser.toObject();
   }
   async getAll(searchTerm = '') {
-    return await User.find({ role: { $ne: Roles.User }, name: { $regex: searchTerm, $options: 'i' } })
+    return await User.find({ role: { $ne: Roles.Lead }, name: { $regex: searchTerm, $options: 'i' } })
       .select('name url role active username')
       .sort('-createdAt');
   }
   async getDetails(_id) {
-    const user = await User.findOne({ role: { $ne: Roles.User }, _id })
+    const user = await User.findOne({ role: { $ne: Roles.Lead }, _id })
       .select('firstName lastName mobile url role rule active username email')
       .sort('-createdAt');
     if (!user) throw ErrorHandler.notFound('User not found');
@@ -53,12 +53,12 @@ class UserService {
     return user.toObject();
   }
   async toggleActiveStatus(_id) {
-    const user = await User.findOne({ _id, role: { $ne: Roles.User } });
+    const user = await User.findOne({ _id, role: { $ne: Roles.Lead } });
     if (!user) throw ErrorHandler.notFound('User not found');
-    const updated = await User.findOneAndUpdate({ _id, role: { $ne: Roles.User } }, { active: !user.active });
+    const updated = await User.findOneAndUpdate({ _id, role: { $ne: Roles.Lead } }, { active: !user.active });
     if (!updated)
       throw ErrorHandler.internalServerError('An error occurred while updating the resource. Please try again later.');
     return `User is now ${updated.active ? 'inactive' : 'active'}.`;
   }
 }
-module.exports = new UserService(User);
+module.exports = new UserService();
