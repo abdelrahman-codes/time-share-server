@@ -42,9 +42,8 @@ const updateMyProfileDto = {
       email: Joi.string().custom(email).optional(),
       rule: Joi.string().optional(),
       password: Joi.string().custom(password).optional(),
-      role: Joi.string().optional().valid(Roles.Owner, Roles.Admin),
     })
-    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'role', 'pic')
+    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'pic')
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };
 
