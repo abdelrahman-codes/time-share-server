@@ -20,7 +20,6 @@ const normalizeText = (req, res, next) => {
       }
     }
   }
-  console.log(req.body);
   next();
 };
 module.exports = normalizeText;

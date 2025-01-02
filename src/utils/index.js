@@ -1,10 +1,5 @@
 module.exports.DeviceOsUtility = require('./device-os');
-module.exports.PickUtility = require('./pick');
-module.exports.OmitUtility = require('./omit');
-module.exports.BindUtility = require('./bind');
 module.exports.ExcelUtility = require('./excel-sheet');
 module.exports.OnlyUniqueUtility = require('./only-unique');
-module.exports.getAggregateOptions = require('./getAggregateOptions');
 module.exports.GenerateRandomString = require('./random-string');
 module.exports.GenerateRandomNumber = require('./random-number');
-module.exports.SaveUniqueUUID = require('./save-doc-unique-uuid');

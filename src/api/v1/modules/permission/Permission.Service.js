@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const ErrorHandler = require('../../../../enums/errors');
 const Permission = require('./Permission.entity');
 const { AccessLevelEnum, LeadFeatureEnum, ModuleEnum } = require('../../../../enums/permission');
+const UserService = require('../user/User.Service');
 class PermissionService {
   async initializePermissions(userId) {
     const user = await Permission.findOne({ userId });
@@ -41,6 +42,14 @@ class PermissionService {
       return acc;
     }, {});
     return groupedData;
+  }
+  async updateFeatureAccessLevel(userId, feature, accessLevel) {
+    await UserService.getDetails(userId);
+    const updatedPermission = await Permission.findOneAndUpdate({ userId, feature }, { accessLevel });
+    if (!updatedPermission) {
+      throw ErrorHandler.notFound('Feature not found');
+    }
+    return 'Feature access level updated successfully';
   }
 }
 module.exports = new PermissionService();
