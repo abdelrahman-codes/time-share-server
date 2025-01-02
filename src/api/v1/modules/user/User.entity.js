@@ -7,14 +7,18 @@ const userSchema = mongoose.Schema(
     firstName: { type: String, trim: true },
     lastName: { type: String, trim: true },
     name: { type: String, trim: true },
-    username: { type: String, trim: true, unique: true, index: true },
+    username: { type: String, trim: true, unique: true, index: true, sparse: true },
     email: { type: String, trim: true, default: null },
     password: { type: String, trim: true },
     mobile: { type: String, trim: true },
+    whatsappMobileNumber: { type: String, trim: true },
     rule: { type: String, trim: true },
-
-    dob: { type: Date },
-    gender: { type: String },
+    nationality: { type: String, trim: true },
+    getFrom: { type: String, trim: true },
+    contactMethod: { type: String, trim: true },
+    ticketStatus: { type: String, trim: true },
+    address: { type: String, trim: true },
+    category: { type: String, trim: true },
     url: { type: String, trim: true, default: null },
 
     // profile privacy setting
@@ -35,7 +39,10 @@ userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, Number(process.env.SALT_ROUNDS));
   }
-  this.name = `${this.firstName} ${this.lastName}`;
+  if (!this.isModified('name')) {
+    this.name = `${this.firstName} ${this.lastName}`;
+  }
+
   // Generate a new OTP for user registration
   this.otp = Math.floor(1000 + Math.random() * 9000);
   next();
