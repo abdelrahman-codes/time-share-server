@@ -40,28 +40,7 @@ class LeadService {
     await lead.save();
     return lead.toObject();
   }
-  async getAll(queryOptions) {
-    let page = queryOptions.page || 1,
-      limit = queryOptions.limit || 10,
-      searchTerm = queryOptions.searchTerm || '',
-      contactMethod = queryOptions.contactMethod || '',
-      category = queryOptions.category || '',
-      getFrom = queryOptions.getFrom || '';
-
-    const query = {
-      role: Roles.Lead,
-      name: { $regex: searchTerm, $options: 'i' },
-      category: { $regex: category, $options: 'i' },
-      contactMethod: { $regex: contactMethod, $options: 'i' },
-      getFrom: { $regex: getFrom, $options: 'i' },
-    };
-
-    const options = {
-      page,
-      limit,
-      select: 'name url ticketStatus',
-      sort: '-createdAt',
-    };
+  async getAll(query, options) {
     return await PaginateHelper(User, query, options);
   }
   async getDetails(_id) {

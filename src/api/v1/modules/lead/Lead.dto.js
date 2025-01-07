@@ -1,6 +1,12 @@
 const Joi = require('joi');
 const { email, isValidObjectId } = require('../../Common/validations/custom');
-const { NationalityEnum, ContactMethodEnum, GetFromEnum, UserCategoryEnum } = require('../../../../enums/lead');
+const {
+  NationalityEnum,
+  ContactMethodEnum,
+  GetFromEnum,
+  UserCategoryEnum,
+  MobileAppRequestEnum,
+} = require('../../../../enums/lead');
 const createDto = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -69,18 +75,42 @@ const get = {
     page: Joi.number().optional(),
     limit: Joi.number().optional(),
     searchTerm: Joi.string().optional().allow(''),
-    contactMethod: Joi.string()
-      .valid(ContactMethodEnum.Facebook, ContactMethodEnum.Google, ContactMethodEnum.Manual, ContactMethodEnum.Website)
-      .optional()
-      .allow(''),
-    getFrom: Joi.string()
-      .optional()
-      .valid(GetFromEnum.Call, GetFromEnum.Form, GetFromEnum.Manual, GetFromEnum.Whatsapp)
-      .allow(''),
-    category: Joi.string()
-      .valid(UserCategoryEnum.PremiumLead, UserCategoryEnum.Rubbish, UserCategoryEnum.UnKnown)
-      .optional()
-      .allow(''),
+    contactMethod: Joi.alternatives().try(
+      Joi.string()
+        .valid(ContactMethodEnum.Facebook, ContactMethodEnum.Google, ContactMethodEnum.Manual, ContactMethodEnum.Website)
+        .optional()
+        .allow(''),
+      Joi.array()
+        .items(
+          Joi.string().valid(
+            ContactMethodEnum.Facebook,
+            ContactMethodEnum.Google,
+            ContactMethodEnum.Manual,
+            ContactMethodEnum.Website,
+          ),
+        )
+        .optional(),
+    ),
+
+    getFrom: Joi.alternatives().try(
+      Joi.string().optional().valid(GetFromEnum.Call, GetFromEnum.Form, GetFromEnum.Manual, GetFromEnum.Whatsapp).allow(''),
+      Joi.array()
+        .items(Joi.string().valid(GetFromEnum.Call, GetFromEnum.Form, GetFromEnum.Manual, GetFromEnum.Whatsapp))
+        .optional(),
+    ),
+    category: Joi.alternatives().try(
+      Joi.string()
+        .valid(UserCategoryEnum.PremiumLead, UserCategoryEnum.Rubbish, UserCategoryEnum.UnKnown)
+        .optional()
+        .allow(''),
+      Joi.array()
+        .items(Joi.string().valid(UserCategoryEnum.PremiumLead, UserCategoryEnum.Rubbish, UserCategoryEnum.UnKnown))
+        .optional(),
+    ),
+    mobileAppRequest: Joi.alternatives().try(
+      Joi.string().valid(MobileAppRequestEnum.HaveAccount, MobileAppRequestEnum.NoAccount).optional(),
+      Joi.array().items(Joi.string().valid(MobileAppRequestEnum.HaveAccount, MobileAppRequestEnum.NoAccount)).optional(),
+    ),
   }),
 };
 
