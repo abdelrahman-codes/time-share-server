@@ -12,12 +12,20 @@ const {
   UserCategoryEnum,
 } = require('../../../../enums/lead');
 const { GenerateRandomString } = require('../../../../utils');
+const { PaginateHelper } = require('../../../../helpers');
 class LeadService {
   async create(data) {
     const user = await User.findOne({ mobile: data.mobile });
     if (user) {
       logger.warn(`Attempt to create a user with existing mobile: ${data.mobile}`);
       throw ErrorHandler.badRequest('Mobile number already exists');
+    }
+    if (data.nationalId) {
+      const nationalIdExists = await User.findOne({ nationalId: data.nationalId });
+      if (nationalIdExists) {
+        logger.warn(`Attempt to create a user with existing nationalId: ${data.nationalId}`);
+        throw ErrorHandler.badRequest('National id already exists');
+      }
     }
     if (data?.pic) data.url = process.env.BASE_URL + data.pic;
     data.ticketStatus = TicketStatusEnum.Done;
@@ -32,17 +40,35 @@ class LeadService {
     await lead.save();
     return lead.toObject();
   }
-  async getAll(searchTerm = '') {
-    return await User.find({ role: { $ne: Roles.Lead }, name: { $regex: searchTerm, $options: 'i' } })
-      .select('name url role active username')
-      .sort('-createdAt');
+  async getAll(queryOptions) {
+    let page = queryOptions.page || 1,
+      limit = queryOptions.limit || 10,
+      searchTerm = queryOptions.searchTerm || '',
+      contactMethod = queryOptions.contactMethod || '',
+      category = queryOptions.category || '',
+      getFrom = queryOptions.getFrom || '';
+
+    const query = {
+      role: Roles.Lead,
+      name: { $regex: searchTerm, $options: 'i' },
+      category: { $regex: category, $options: 'i' },
+      contactMethod: { $regex: contactMethod, $options: 'i' },
+      getFrom: { $regex: getFrom, $options: 'i' },
+    };
+
+    const options = {
+      page,
+      limit,
+      select: 'name url ticketStatus',
+      sort: '-createdAt',
+    };
+    return await PaginateHelper(User, query, options);
   }
   async getDetails(_id) {
-    const user = await User.findOne({ role: { $ne: Roles.Lead }, _id })
-      .select('firstName lastName mobile url role rule active username email')
-      .sort('-createdAt');
+    const user = await User.findOne({ role: Roles.Lead, _id }).sort('-createdAt');
     if (!user) throw ErrorHandler.notFound('User not found');
-    return user;
+    const { password, forgetPassword, emailVerified, otp, createdAt, updatedAt, ...result } = user.toObject();
+    return result;
   }
   async update(_id, data) {
     if (data?.pic) data.url = process.env.BASE_URL + data.pic;
@@ -52,7 +78,13 @@ class LeadService {
         throw ErrorHandler.badRequest('Mobile number already exists');
       }
     }
-    const user = await User.findOneAndUpdate({ _id }, data);
+    if (data?.nationalId) {
+      const nationalIdExists = await User.findOne({ nationalId: data.nationalId, _id: { $ne: _id } });
+      if (nationalIdExists) {
+        throw ErrorHandler.badRequest('National id already exists');
+      }
+    }
+    const user = await User.findOneAndUpdate({ _id, role: Roles.Lead }, data);
     if (!user) {
       throw ErrorHandler.notFound('User not found');
     }

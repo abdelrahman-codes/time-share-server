@@ -8,6 +8,7 @@ const createDto = {
     lastName: Joi.string().required(),
     mobile: Joi.string().required(),
     whatsappMobileNumber: Joi.string().optional(),
+    nationalId: Joi.string().optional(),
     email: Joi.string().custom(email).optional(),
     nationality: Joi.string().optional().valid(NationalityEnum.Egyptian, NationalityEnum.Foreign),
     address: Joi.string().optional(),
@@ -31,6 +32,7 @@ const updateDto = {
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
       mobile: Joi.string().optional(),
+      nationalId: Joi.string().optional(),
       whatsappMobileNumber: Joi.string().optional(),
       email: Joi.string().custom(email).optional(),
       nationality: Joi.string().optional().valid(NationalityEnum.Egyptian, NationalityEnum.Foreign),
@@ -49,6 +51,7 @@ const updateDto = {
       'firstName',
       'lastName',
       'mobile',
+      'nationalId',
       'whatsappMobileNumber',
       'email',
       'nationality',
@@ -61,7 +64,28 @@ const updateDto = {
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };
 
+const get = {
+  query: Joi.object().keys({
+    page: Joi.number().optional(),
+    limit: Joi.number().optional(),
+    searchTerm: Joi.string().optional().allow(''),
+    contactMethod: Joi.string()
+      .valid(ContactMethodEnum.Facebook, ContactMethodEnum.Google, ContactMethodEnum.Manual, ContactMethodEnum.Website)
+      .optional()
+      .allow(''),
+    getFrom: Joi.string()
+      .optional()
+      .valid(GetFromEnum.Call, GetFromEnum.Form, GetFromEnum.Manual, GetFromEnum.Whatsapp)
+      .allow(''),
+    category: Joi.string()
+      .valid(UserCategoryEnum.PremiumLead, UserCategoryEnum.Rubbish, UserCategoryEnum.UnKnown)
+      .optional()
+      .allow(''),
+  }),
+};
+
 module.exports = {
   createDto,
   updateDto,
+  get,
 };

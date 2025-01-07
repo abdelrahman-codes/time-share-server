@@ -14,6 +14,9 @@ const normalizeText = (req, res, next) => {
   }
 
   if (req.query) {
+    req.page = parseInt(req.query.page) || 1;
+    req.limit = parseInt(req.query.limit) || 10;
+    req.searchTerm = req.query.searchTerm || '';
     for (const key in req.query) {
       if (typeof req.query[key] === 'string') {
         req.query[key] = normalize(req.query[key]);

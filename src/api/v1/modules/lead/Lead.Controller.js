@@ -3,7 +3,6 @@ const LeadService = require('./Lead.Service');
 class LeadController {
   async create(req, res, next) {
     try {
-      console.log(req.body);
       const { password, ...result } = await LeadService.create(req.body);
       logger.info('User created');
       return res.sendResponse(result);
@@ -14,9 +13,7 @@ class LeadController {
 
   async get(req, res, next) {
     try {
-      let { searchTerm } = req.query;
-      if (!searchTerm) searchTerm = '';
-      const data = await LeadService.getAll(searchTerm);
+      const data = await LeadService.getAll(req.query);
       return res.sendResponse(data);
     } catch (error) {
       next(error);

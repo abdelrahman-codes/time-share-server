@@ -14,6 +14,7 @@ const userSchema = mongoose.Schema(
     whatsappMobileNumber: { type: String, trim: true },
     rule: { type: String, trim: true },
     nationality: { type: String, trim: true },
+    nationalId: { type: String, trim: true },
     getFrom: { type: String, trim: true },
     contactMethod: { type: String, trim: true },
     ticketStatus: { type: String, trim: true },

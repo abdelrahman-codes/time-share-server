@@ -20,7 +20,7 @@ router.put(
   ValidationMiddleware(LeadDto.updateDto),
   LeadController.update,
 );
-router.get('/', AuthMiddleware(Roles.Owner), LeadController.get);
+router.get('/', AuthMiddleware(Roles.Owner), ValidationMiddleware(LeadDto.get), LeadController.get);
 router.get('/details/:_id', AuthMiddleware(Roles.Owner), ValidationMiddleware(CommonDto._idDto), LeadController.getDetails);
 
 module.exports = router;
