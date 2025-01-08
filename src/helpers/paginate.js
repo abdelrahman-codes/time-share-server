@@ -3,25 +3,28 @@ async function paginate(model, query = {}, options = {}) {
 
   // Ensure page and limit are valid numbers
   const currentPage = Math.max(1, parseInt(page));
-  const pageSize = Math.max(1, parseInt(limit));
+  const itemsPerPage = Math.max(1, parseInt(limit));
 
   // Calculate total documents and total pages
-  const total = await model.countDocuments(query);
-  const totalPages = Math.ceil(total / pageSize);
+  const totalItems = await model.countDocuments(query);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Fetch the paginated result
   const result = await model
     .find(query)
     .select(select)
     .sort(sort)
-    .skip((currentPage - 1) * pageSize)
-    .limit(pageSize);
+    .skip((currentPage - 1) * itemsPerPage)
+    .limit(itemsPerPage);
 
   // Return paginated response
   return {
-    total,
-    totalPages,
-    currentPage,
+    meta: {
+      totalItems,
+      itemsPerPage,
+      totalPages,
+      currentPage,
+    },
     result,
   };
 }
