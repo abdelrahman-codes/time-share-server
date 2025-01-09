@@ -41,7 +41,6 @@ class LeadController {
         if (username.length < 2 && username[0] === MobileAppRequestEnum.HaveAccount)
           query.username = { $regex: '', $options: 'i' };
         else if (username.length < 2 && username[0] === MobileAppRequestEnum.NoAccount) query.username = null;
-        console.log(username);
       } else if (req.query.mobileAppRequest) {
         let username =
           req.query.mobileAppRequest === MobileAppRequestEnum.HaveAccount ? { $regex: '', $options: 'i' } : null;

@@ -14,7 +14,7 @@ class UserService {
       throw ErrorHandler.unauthorized('Invalid credentials');
     }
     const access_token = jwt.sign({ role: user.role, sub: user._id }, process.env.TOKEN_SECRET_KEY, { expiresIn: '12h' });
-    const { password, ...result } = user.toObject();
+    const { password, forgetPassword,emailVerified,createdAt,updatedAt,otp,...result } = user.toObject();
     const permissions = await PermissionService.userPermissions(user._id);
     return {
       access_token,

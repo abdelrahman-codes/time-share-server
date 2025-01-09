@@ -30,10 +30,11 @@ class PermissionService {
       if (!acc[moduleName]) {
         acc[moduleName] = {
           hasAccess: false,
+          features:{},
         };
       }
 
-      acc[moduleName][permissionName] = accessLevel;
+      acc[moduleName].features[permissionName] = accessLevel;
 
       if (accessLevel === AccessLevelEnum.View || accessLevel === AccessLevelEnum.Edit) {
         acc[moduleName].hasAccess = true;
