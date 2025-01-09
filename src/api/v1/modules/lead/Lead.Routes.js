@@ -7,7 +7,7 @@ const CommonDto = require('../../Common/validations/Validation');
 
 router.post(
   '/',
-  AuthMiddleware(Roles.Owner),
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
   MulterMiddleware('single', './public/media', 'image', 'pic'),
   ValidationMiddleware(LeadDto.createDto),
   LeadController.create,
@@ -15,12 +15,12 @@ router.post(
 
 router.put(
   '/:_id',
-  AuthMiddleware(Roles.Owner),
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
   MulterMiddleware('single', './public/media', 'image', 'pic'),
   ValidationMiddleware(LeadDto.updateDto),
   LeadController.update,
 );
-router.get('/', AuthMiddleware(Roles.Owner), ValidationMiddleware(LeadDto.get), LeadController.get);
-router.get('/details/:_id', AuthMiddleware(Roles.Owner), ValidationMiddleware(CommonDto._idDto), LeadController.getDetails);
+router.get('/', AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]), ValidationMiddleware(LeadDto.get), LeadController.get);
+router.get('/details/:_id', AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]), ValidationMiddleware(CommonDto._idDto), LeadController.getDetails);
 
 module.exports = router;

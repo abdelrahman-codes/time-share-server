@@ -44,7 +44,7 @@ class LeadService {
     return await PaginateHelper(User, query, options);
   }
   async getDetails(_id) {
-    const user = await User.findOne({ role: Roles.Lead, _id }).sort('-createdAt');
+    const user = await User.findOne({ role: Roles.Lead, _id });
     if (!user) throw ErrorHandler.notFound('User not found');
     const { password, forgetPassword, emailVerified, otp, createdAt, updatedAt, ...result } = user.toObject();
     return result;

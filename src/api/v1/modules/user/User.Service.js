@@ -27,9 +27,9 @@ class UserService {
       .sort('-createdAt');
   }
   async getDetails(_id) {
-    const user = await User.findOne({ role: { $ne: Roles.Lead }, _id })
-      .select('firstName lastName mobile url role rule active username email')
-      .sort('-createdAt');
+    const user = await User.findOne({ role: { $ne: Roles.Lead }, _id }).select(
+      'firstName lastName mobile url role rule active username email',
+    );
     if (!user) throw ErrorHandler.notFound('User not found');
     return user;
   }
