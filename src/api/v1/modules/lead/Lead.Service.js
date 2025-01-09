@@ -46,7 +46,7 @@ class LeadService {
   async getDetails(_id) {
     const user = await User.findOne({ role: Roles.Lead, _id });
     if (!user) throw ErrorHandler.notFound('User not found');
-    const { password, forgetPassword, emailVerified, otp, createdAt, updatedAt, ...result } = user.toObject();
+    const { password, forgetPassword, emailVerified, otp, ...result } = user.toObject();
     return result;
   }
   async update(_id, data) {
