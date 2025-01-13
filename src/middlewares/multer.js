@@ -17,7 +17,7 @@ const uploadMiddleware = (uploadType, storagePath, fileType, fieldName, maxCount
         upload = MulterHelper.uploadAll(storagePath);
         break;
       default:
-        throw ErrorHandler.badRequest('Invalid file type.');
+        throw ErrorHandler.badRequest({},'Invalid file type.');
     }
     let multerUpload;
     switch (uploadType) {

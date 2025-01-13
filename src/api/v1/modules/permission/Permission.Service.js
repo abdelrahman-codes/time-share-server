@@ -48,7 +48,7 @@ class PermissionService {
     await UserService.getDetails(userId);
     const updatedPermission = await Permission.findOneAndUpdate({ userId, feature }, { accessLevel });
     if (!updatedPermission) {
-      throw ErrorHandler.notFound('Feature not found');
+      throw ErrorHandler.notFound({},'Feature not found');
     }
     return 'Feature access level updated successfully';
   }

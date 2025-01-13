@@ -34,7 +34,7 @@ function checkImageType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(ErrorHandler.badRequest('Only images are allowed'));
+    cb(ErrorHandler.badRequest({},'Only images are allowed'));
   }
 }
 
@@ -47,7 +47,7 @@ function checkDocsType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(ErrorHandler.badRequest('Documents Only (PDF, DOC, DOCX, XLS, XLSX)!'));
+    cb(ErrorHandler.badRequest({},'Documents Only (PDF, DOC, DOCX, XLS, XLSX)!'));
   }
 }
 

@@ -3,7 +3,7 @@ const { email, password, isValidObjectId } = require('../../Common/validations/c
 const Roles = require('../../../../enums/roles');
 const createUserDto = {
   body: Joi.object().keys({
-    pic: Joi.string().optional(),
+    url: Joi.string().optional(),
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     mobile: Joi.string().required(),
@@ -20,7 +20,7 @@ const updateUserDto = {
   }),
   body: Joi.object()
     .keys({
-      pic: Joi.string().optional(),
+      url: Joi.string().optional(),
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
       mobile: Joi.string().optional(),
@@ -29,13 +29,13 @@ const updateUserDto = {
       password: Joi.string().custom(password).optional(),
       role: Joi.string().optional().valid(Roles.Owner, Roles.Admin),
     })
-    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'role', 'pic')
+    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'role', 'url')
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };
 const updateMyProfileDto = {
   body: Joi.object()
     .keys({
-      pic: Joi.string().optional(),
+      url: Joi.string().optional(),
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
       mobile: Joi.string().optional(),
@@ -43,7 +43,7 @@ const updateMyProfileDto = {
       rule: Joi.string().optional(),
       password: Joi.string().custom(password).optional(),
     })
-    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'pic')
+    .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'url')
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };
 

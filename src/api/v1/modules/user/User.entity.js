@@ -23,10 +23,6 @@ const userSchema = mongoose.Schema(
     url: { type: String, trim: true, default: null },
 
     // profile privacy setting
-    otp: { type: Number },
-    forgetCode: { type: Number },
-    forgetPassword: { type: Boolean, default: false },
-    emailVerified: { type: Boolean, default: false },
     role: { type: String, default: Roles.Lead },
     active: { type: Boolean, default: true },
   },
@@ -43,9 +39,6 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('name')) {
     this.name = `${this.firstName} ${this.lastName}`;
   }
-
-  // Generate a new OTP for user registration
-  this.otp = Math.floor(1000 + Math.random() * 9000);
   next();
 });
 
@@ -63,8 +56,6 @@ userSchema.pre('findOneAndUpdate', async function (next) {
 
     update.name = `${firstName || ''} ${lastName || ''}`.trim();
   }
-
-  update.otp = Math.floor(1000 + Math.random() * 9000);
   next();
 });
 

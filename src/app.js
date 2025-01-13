@@ -44,7 +44,7 @@ app.use('/api/v1', V1Routes);
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
-  throw ErrorHandler.notFound('Invalid End Point');
+  throw ErrorHandler.notFound({}, 'Invalid End Point');
 });
 
 // Common error handler

@@ -25,7 +25,7 @@ const createDto = {
     category: Joi.string()
       .valid(UserCategoryEnum.PremiumLead, UserCategoryEnum.Rubbish, UserCategoryEnum.UnKnown)
       .optional(),
-    pic: Joi.string().optional(),
+    url: Joi.string().optional(),
   }),
 };
 const updateDto = {
@@ -50,7 +50,7 @@ const updateDto = {
       category: Joi.string()
         .valid(UserCategoryEnum.PremiumLead, UserCategoryEnum.Rubbish, UserCategoryEnum.UnKnown)
         .optional(),
-      pic: Joi.string().optional(),
+      url: Joi.string().optional(),
     })
     .or(
       'name',
@@ -65,7 +65,7 @@ const updateDto = {
       'contactMethod',
       'getFrom',
       'category',
-      'pic',
+      'url',
     )
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };

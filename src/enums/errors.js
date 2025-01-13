@@ -1,3 +1,5 @@
+const { ErrorTypes } = require('./error-types');
+
 class CustomError extends Error {
   constructor(status = 500, message = 'Internal Server Error', error = 'Internal Server Error') {
     super(message);
@@ -6,19 +8,19 @@ class CustomError extends Error {
   }
 }
 const ErrorHandler = {
-  internalServerError(message = 'Internal Server Error') {
-    return new CustomError(500, message, 'Internal Server Error');
+  internalServerError(error={},message = ErrorTypes.InternalServerError) {
+    return new CustomError(500, message,error);
   },
-  badRequest(message = 'Bad Request') {
-    return new CustomError(400, message, 'Bad Request');
+  badRequest(error={},message = ErrorTypes.BadRequest) {
+    return new CustomError(400, message,error);
   },
-  notFound(message = 'Not Found') {
-    return new CustomError(404, message, 'Not Found');
+  notFound(error={},message = ErrorTypes.NotFound) {
+    return new CustomError(404, message, error);
   },
-  unauthorized(message = 'Unauthorized') {
-    return new CustomError(401, message, 'Unauthorized');
+  unauthorized(error={},message = ErrorTypes.Unauthorized) {
+    return new CustomError(401, message, error);
   },
-  dynamicError(code = 500, message = 'Internal Server Error', error = 'Internal Server Error') {
+  dynamicError(code = 500, message = ErrorTypes.InternalServerError, error={}) {
     return new CustomError(code, message, error);
   },
 };

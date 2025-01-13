@@ -20,8 +20,7 @@ module.exports = (validationSchema) => {
       }
     });
     if (Object.keys(validationErrors).length) {
-      res.validationErrors=validationErrors
-      return next(ErrorHandler.badRequest());
+      return next(ErrorHandler.badRequest(validationErrors));
     }
     next();
   };

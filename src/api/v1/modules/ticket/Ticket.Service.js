@@ -9,7 +9,7 @@ class TicketService {
     const ticket = new Ticket(data);
     await ticket.save();
     if (!ticket) {
-      throw ErrorHandler.badRequest('Ticket not created');
+      throw ErrorHandler.badRequest({},'Ticket not created');
     }
     if (lead.ticketStatus === 'Done') {
       await LeadService.update(lead._id, { ticketStatus: 'Pending' });
@@ -19,10 +19,10 @@ class TicketService {
   async createNote(data) {
     const ticket = await Ticket.findOne({ _id: data.ticketId });
     if (!ticket) {
-      throw ErrorHandler.notFound('Ticket not found');
+      throw ErrorHandler.notFound({},'Ticket not found');
     }
     if (ticket.status === TicketStatusEnum.Resolved) {
-      throw ErrorHandler.badRequest('Cannot add note to a resolved ticket');
+      throw ErrorHandler.badRequest({},'Cannot add note to a resolved ticket');
     }
     ticket.notes.push(data);
     await ticket.save();
@@ -32,10 +32,10 @@ class TicketService {
   async resolveTicket(data) {
     const ticket = await Ticket.findOne({ _id: data.ticketId });
     if (!ticket) {
-      throw ErrorHandler.notFound('Ticket not found');
+      throw ErrorHandler.notFound({},'Ticket not found');
     }
     if (ticket.status === TicketStatusEnum.Resolved) {
-      throw ErrorHandler.badRequest('Ticket already resolved');
+      throw ErrorHandler.badRequest({},'Ticket already resolved');
     }
     ticket.status = TicketStatusEnum.Resolved;
     data.content = 'تم حل المشكلة';
