@@ -4,24 +4,25 @@ const cleanErrorMessage = (message) => message.replace(/[\\"]/g, '');
 
 module.exports = (validationSchema) => {
   return (req, res, next) => {
-    const validationErrors = [];
+    const validationErrors = {};
     const requestParts = ['body', 'params', 'query'];
 
     requestParts.forEach((part) => {
       if (validationSchema[part]) {
         const { error } = validationSchema[part].validate(req[part], { abortEarly: false });
         if (error) {
-          const errorMessages = error.details.map((detail) => cleanErrorMessage(detail.message));
-          validationErrors.push(...errorMessages);
+          error.details.forEach((detail) => {
+            const field = detail.path;
+            const message = cleanErrorMessage(detail.message);
+            validationErrors[field] = message;
+          });
         }
       }
     });
-
-    if (validationErrors.length) {
-      return next(ErrorHandler.badRequest(validationErrors.join()));
+    if (Object.keys(validationErrors).length) {
+      res.validationErrors=validationErrors
+      return next(ErrorHandler.badRequest());
     }
-
-    // Proceed to the next middleware or route handler
     next();
   };
 };

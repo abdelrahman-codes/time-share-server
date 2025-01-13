@@ -10,7 +10,7 @@ const errorHandler = (err, req, res, next) => {
   res.status(statusCode).send({
     success: false,
     statusCode,
-    message,
+    message: res.validationErrors || message,
     error,
   });
 };
