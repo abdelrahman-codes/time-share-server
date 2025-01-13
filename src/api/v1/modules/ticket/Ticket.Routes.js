@@ -23,10 +23,10 @@ router.patch(
   ValidationMiddleware(CommonDto._idDto),
   TicketController.resolveTicket,
 );
-// router.get(
-//   '/:_id',
-//   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
-//   ValidationMiddleware(CommonDto._idDto),
-//   TicketController.getAll,
-// );
+router.get(
+  '/:_id',
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
+  ValidationMiddleware(CommonDto._idDto),
+  TicketController.getAll,
+);
 module.exports = router;

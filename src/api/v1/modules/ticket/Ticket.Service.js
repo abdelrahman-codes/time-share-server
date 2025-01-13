@@ -17,42 +17,33 @@ class TicketService {
     return 'Ticket created successfully';
   }
   async createNote(data) {
-    const ticket = await Ticket.findOne({ _id: data.ticketId, ticketType: TicketTypeEnum.Ticket });
+    const ticket = await Ticket.findOne({ _id: data.ticketId });
     if (!ticket) {
       throw ErrorHandler.notFound('Ticket not found');
     }
     if (ticket.status === TicketStatusEnum.Resolved) {
       throw ErrorHandler.badRequest('Cannot add note to a resolved ticket');
     }
-    const note = new Ticket(data);
-    await note.save();
-    if (!note) {
-      throw ErrorHandler.badRequest('Note not created');
-    }
+    ticket.notes.push(data);
+    await ticket.save();
     return 'Note created successfully';
   }
 
   async resolveTicket(data) {
-    const ticket = await Ticket.findOne({ _id: data.ticketId, ticketType: TicketTypeEnum.Ticket });
+    const ticket = await Ticket.findOne({ _id: data.ticketId });
     if (!ticket) {
       throw ErrorHandler.notFound('Ticket not found');
     }
     if (ticket.status === TicketStatusEnum.Resolved) {
       throw ErrorHandler.badRequest('Ticket already resolved');
     }
-    data.content = 'تم حل المشكلة';
-    const note = new Ticket(data);
-    await note.save();
-    if (!note) {
-      throw ErrorHandler.badRequest('Not resolved');
-    }
     ticket.status = TicketStatusEnum.Resolved;
+    data.content = 'تم حل المشكلة';
+    ticket.notes.push(data);
     await ticket.save();
-
     const openTicket = await Ticket.findOne({
       leadId: ticket.leadId,
       status: TicketStatusEnum.InProgress,
-      ticketType: TicketTypeEnum.Ticket,
     });
     if (!openTicket) {
       await LeadService.update(ticket.leadId, { ticketStatus: 'Done' });
@@ -61,45 +52,58 @@ class TicketService {
   }
   async getAll(_id) {
     const tickets = await Ticket.aggregate([
+      { $match: { leadId: new mongoose.Types.ObjectId(_id) } },
+      { $unwind: '$notes' },
+      { $lookup: { from: 'users', localField: 'notes.createdBy', foreignField: '_id', as: 'createdByUser' } },
+      { $lookup: { from: 'users', localField: 'notes.resolvedBy', foreignField: '_id', as: 'resolvedByUser' } },
       {
-        $match: {
-          leadId: new mongoose.Types.ObjectId(_id),
-          ticketType: TicketTypeEnum.Ticket,
+        $project: {
+          _id: 1,
+          type: 1,
+          status: 1,
+          createdAt: 1,
+          'notes._id': 1,
+          'notes.content': 1,
+          'notes.createdAt': 1,
+          'createdByUser._id': 1,
+          'createdByUser.name': 1,
+          'createdByUser.url': 1,
+          'resolvedByUser._id': 1,
+          'resolvedByUser.name': 1,
+          'resolvedByUser.url': 1,
         },
       },
       {
-        $lookup: {
-          from: 'users',
-          localField: 'createdBy',
-          foreignField: '_id',
-          as: 'createdBy',
+        $group: {
+          _id: '$_id',
+          type: { $first: '$type' },
+          status: { $first: '$status' },
+          createdAt: { $first: '$createdAt' },
+          notes: {
+            $push: {
+              _id: '$notes._id',
+              content: '$notes.content',
+              createdAt: '$notes.createdAt',
+              createdBy: { $arrayElemAt: ['$createdByUser', 0] },
+              resolvedBy: { $arrayElemAt: ['$resolvedByUser', 0] },
+            },
+          },
         },
       },
       {
-        $unwind: '$createdBy',
-      },
-      {
-        $lookup: {
-          from: 'tickets',
-          localField: '_id',
-          foreignField: 'ticketId',
-          as: 'notes',
+        $addFields: {
+          sortKey: {
+            $switch: {
+              branches: [
+                { case: { $eq: ['$status', TicketStatusEnum.InProgress] }, then: 1 },
+                { case: { $eq: ['$status', TicketStatusEnum.Resolved] }, then: 2 },
+              ],
+            },
+          },
         },
       },
-      // {
-      //   $project: {
-      //     _id: 1,
-      //     content: 1,
-      //     status: 1,
-      //     type: 1,
-      //     createdBy: {
-      //       _id: '$createdBy._id',
-      //       name: '$createdBy.name',
-      //       url: '$createdBy.url',
-      //     },
-      //     notes: 1,
-      //   },
-      // },
+      { $sort: { sortKey: 1,createdAt:-1} },
+      { $project: { sortKey: 0 } },
     ]);
     return tickets;
   }

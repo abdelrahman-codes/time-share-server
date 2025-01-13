@@ -6,6 +6,10 @@ class TicketController {
     try {
       req.body.createdBy = req.token.sub;
       req.body.status = TicketStatusEnum.InProgress;
+      req.body.notes={
+        content: req.body.content,
+        createdBy: req.token.sub,
+      }
       const data = await TicketService.create(req.body);
       logger.info('New ticket created');
       return res.sendResponse(data);
@@ -16,7 +20,6 @@ class TicketController {
   async createNote(req, res, next) {
     try {
       req.body.createdBy = req.token.sub;
-      req.body.ticketType = TicketTypeEnum.Note;
       const data = await TicketService.createNote(req.body);
       return res.sendResponse(data);
     } catch (error) {
@@ -26,7 +29,6 @@ class TicketController {
   async resolveTicket(req, res, next) {
     try {
       const data = await TicketService.resolveTicket({
-        ticketType: TicketTypeEnum.Note,
         ticketId: req.params._id,
         createdBy: req.token.sub,
         resolvedBy: req.token.sub,
