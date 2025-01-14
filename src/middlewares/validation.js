@@ -12,7 +12,8 @@ module.exports = (validationSchema) => {
         const { error } = validationSchema[part].validate(req[part], { abortEarly: false });
         if (error) {
           error.details.forEach((detail) => {
-            const field = detail.path;
+            let field = detail.path;
+            if (!field.length) field = ['Fields missing'];
             const message = cleanErrorMessage(detail.message);
             validationErrors[field] = message;
           });
