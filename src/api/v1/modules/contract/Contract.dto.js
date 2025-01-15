@@ -18,7 +18,11 @@ const create = {
       then: Joi.forbidden(),
       otherwise: Joi.number().min(1).required(),
     }),
-
+    startUsageWhenComplete: Joi.alternatives().conditional('paymentMethod', {
+      is: ContractPaymentMethodEnum.Cash,
+      then: Joi.forbidden(),
+      otherwise: Joi.number().min(1).max(100).required(),
+    }),
     installmentStartIn: Joi.alternatives().conditional('paymentMethod', {
       is: ContractPaymentMethodEnum.Cash,
       then: Joi.forbidden(),
@@ -31,7 +35,6 @@ const create = {
       .required(),
     individuals: Joi.number().valid(2, 4, 6, 8).required(),
     unitType: Joi.string().valid('A', 'B', 'C').required(),
-    startUsageWhenComplete: Joi.number().min(1).max(100).required(),
     contractDate: Joi.string().custom(date).required(),
   }),
 };

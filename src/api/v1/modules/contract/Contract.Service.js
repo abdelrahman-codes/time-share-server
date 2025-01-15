@@ -1,8 +1,5 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const ErrorHandler = require('../../../../enums/errors');
 const Contract = require('./Contract.entity');
-const { AccessLevelEnum, LeadFeatureEnum, ModuleEnum } = require('../../../../enums/permission');
 const { CityService, VillageService } = require('../location/services');
 const LeadService = require('../lead/Lead.Service');
 class ContractService {
@@ -25,7 +22,7 @@ class ContractService {
   async getDetails(_id) {
     const contract = await Contract.findOne({ leadId: _id }).populate('cityId villageId', 'nameEn nameAr');
     if (!contract) throw ErrorHandler.notFound({}, 'Contract not found');
-    const { createdBy, createdAt, leadId, numberOfInstallments,startUsageWhenComplete, ...result } = contract.toObject();
+    const { createdBy, createdAt, leadId, numberOfInstallments, ...result } = contract.toObject();
     return result;
   }
 }

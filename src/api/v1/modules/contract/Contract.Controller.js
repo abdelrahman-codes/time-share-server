@@ -1,4 +1,3 @@
-const logger = require('../../../../config/logger');
 const { ContractPaymentMethodEnum, ContractMembershipTypeEnum } = require('../../../../enums/contract');
 const ErrorHandler = require('../../../../enums/errors');
 const ContractService = require('./Contract.Service');
@@ -17,6 +16,10 @@ class ContractController {
       if (data.paymentMethod === ContractPaymentMethodEnum.Installments) {
         if (data.totalAmount <= data.downPayment)
           throw ErrorHandler.badRequest({}, 'Down payment must be less than total amount');
+
+        // handle reservations access
+        const paidPercentage=(data.downPayment / data.totalAmount)*100;
+        if(paidPercentage<data.startUsageWhenComplete)data.canReserve=false;
 
         //handle payments
         data.remainingAmount = data.totalAmount - data.downPayment;

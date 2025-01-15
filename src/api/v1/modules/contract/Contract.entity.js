@@ -21,7 +21,8 @@ const contractSchema = mongoose.Schema(
     individuals: { type: Number },
     unitType: { type: String },
     startUsageWhenComplete: { type: Number },
-
+    canReserve: { type: Boolean, default: true },
+    
     totalNights: { type: Number },
     usageNights: { type: Number },
     remainingNights: { type: Number },
