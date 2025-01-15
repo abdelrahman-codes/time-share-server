@@ -22,5 +22,11 @@ class ContractService {
 
     return 'Contract created successfully';
   }
+  async getDetails(_id) {
+    const contract = await Contract.findOne({ leadId: _id }).populate('cityId villageId', 'nameEn nameAr');
+    if (!contract) throw ErrorHandler.notFound({}, 'Contract not found');
+    const { createdBy, createdAt, leadId, numberOfInstallments,startUsageWhenComplete, ...result } = contract.toObject();
+    return result;
+  }
 }
 module.exports = new ContractService();

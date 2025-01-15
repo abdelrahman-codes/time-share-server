@@ -4,7 +4,7 @@ const { ContractPaymentMethodEnum, ContractMembershipTypeEnum } = require('../..
 const create = {
   body: Joi.object().keys({
     leadId: Joi.string().custom(isValidObjectId).required(),
-    
+
     paymentMethod: Joi.string().valid(ContractPaymentMethodEnum.Cash, ContractPaymentMethodEnum.Installments).required(),
     totalAmount: Joi.number().min(1).required(),
 
@@ -31,6 +31,8 @@ const create = {
       .required(),
     individuals: Joi.number().valid(2, 4, 6, 8).required(),
     unitType: Joi.string().valid('A', 'B', 'C').required(),
+    startUsageWhenComplete: Joi.number().min(1).max(100).required(),
+    contractDate: Joi.string().custom(date).required(),
   }),
 };
 module.exports = {

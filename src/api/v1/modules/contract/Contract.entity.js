@@ -3,20 +3,28 @@ const mongoose = require('mongoose');
 const contractSchema = mongoose.Schema(
   {
     paymentMethod: { type: String, trim: true },
+
     totalAmount: { type: Number },
     downPayment: { type: Number },
-    numberOfInstallments: { type: Number },
-    remainingAmount: { type: Number },
+    totalInstallments: { type: Number },
     installmentAmount: { type: Number },
+    remainingAmount: { type: Number },
+    totalPaid: { type: Number },
 
+    numberOfInstallments: { type: Number },
     installmentStartIn: { type: Date },
     installmentEndsIn: { type: Date },
+    nextInstallments: { type: Date },
+    contractDate: { type: Date },
 
     membershipType: { type: String },
     individuals: { type: Number },
     unitType: { type: String },
     startUsageWhenComplete: { type: Number },
-    contractDate: { type: Date },
+
+    totalNights: { type: Number },
+    usageNights: { type: Number },
+    remainingNights: { type: Number },
 
     cityId: { type: mongoose.Schema.Types.ObjectId, ref: 'City' },
     villageId: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
