@@ -2,7 +2,7 @@ require('dotenv').config();
 const os = require('os');
 const cluster = require('cluster');
 const http = require('http');
-const app = require('./src/app'); // Import the app setup
+const app = require('./src/app');
 
 const port = process.env.PORT || 8000;
 const numCPUs = os.cpus().length;
