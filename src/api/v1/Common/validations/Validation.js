@@ -1,3 +1,4 @@
+// Common DTOs
 const Joi = require('joi');
 const { isValidObjectId } = require('./custom');
 
