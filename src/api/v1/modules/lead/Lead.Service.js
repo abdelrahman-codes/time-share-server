@@ -51,29 +51,33 @@ class LeadService {
     return result;
   }
   async update(_id, data) {
+    const user = await this.getDetails(_id);
     if (data?.url) data.url = process.env.BASE_URL + data.url;
     if (data?.mobile) {
       const exists = await User.findOne({ mobile: data.mobile, _id: { $ne: _id } });
       if (exists) {
-        throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists},'Mobile number already exists');
+        throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists }, 'Mobile number already exists');
       }
     }
     if (data?.nationalId) {
       const nationalIdExists = await User.findOne({ nationalId: data.nationalId, _id: { $ne: _id } });
       if (nationalIdExists) {
-        throw ErrorHandler.badRequest({ nationalId: ValidationTypes.AlreadyExists},'National id already exists');
+        throw ErrorHandler.badRequest({ nationalId: ValidationTypes.AlreadyExists }, 'National id already exists');
       }
     }
-    const user = await User.findOneAndUpdate({ _id, role: Roles.Lead }, data);
-    if (!user) {
-      throw ErrorHandler.notFound({},'User not found');
-    }
+
+    const updatedUser = await User.updateOne({ _id, role: Roles.Lead }, data);
+    if (updatedUser.matchedCount === 0)
+      throw ErrorHandler.dynamicError(
+        400,
+        'Update failed: No matching lead was found to update. Please verify the lead ID or query parameters.',
+      );
+
     if (data?.url) {
       const fileName = path.basename(user?.url);
       if (fileName) deleteFile(`./public/media/${fileName}`);
     }
-
-    return user.toObject();
+    return await this.getDetails(_id);
   }
 }
 module.exports = new LeadService();
