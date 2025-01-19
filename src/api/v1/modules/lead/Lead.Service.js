@@ -19,13 +19,13 @@ class LeadService {
     const user = await User.findOne({ mobile: data.mobile });
     if (user) {
       logger.warn(`Attempt to create a user with existing mobile: ${data.mobile}`);
-      throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists },'Mobile number already exists');
+      throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists }, 'Mobile number already exists');
     }
     if (data.nationalId) {
       const nationalIdExists = await User.findOne({ nationalId: data.nationalId });
       if (nationalIdExists) {
         logger.warn(`Attempt to create a user with existing nationalId: ${data.nationalId}`);
-        throw ErrorHandler.badRequest({ nationalId: ValidationTypes.AlreadyExists },'National id already exists');
+        throw ErrorHandler.badRequest({ nationalId: ValidationTypes.AlreadyExists }, 'National id already exists');
       }
     }
     if (data?.url) data.url = process.env.BASE_URL + data.url;
@@ -44,10 +44,14 @@ class LeadService {
   async getAll(query, options) {
     return await PaginateHelper(User, query, options);
   }
-  async getDetails(_id) {
+  async getDetails(_id, returnContract = false) {
     const user = await User.findOne({ role: Roles.Lead, _id });
-    if (!user) throw ErrorHandler.notFound({},'User not found');
+    if (!user) throw ErrorHandler.notFound({}, 'User not found');
     const { password, forgetPassword, emailVerified, otp, ...result } = user.toObject();
+    if (returnContract) {
+      const ContractService = require('../contract/Contract.Service');
+      result.contract = await ContractService.getDetails(user._id);
+    }
     return result;
   }
   async update(_id, data) {

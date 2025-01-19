@@ -60,14 +60,6 @@ class ContractController {
       next(error);
     }
   }
-  async getDetails(req, res, next) {
-    try {
-      const data = await ContractService.getDetails(req.params._id);
-      return res.sendResponse(data);
-    } catch (error) {
-      next(error);
-    }
-  }
 }
 
 module.exports = new ContractController();
