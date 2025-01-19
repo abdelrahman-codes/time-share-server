@@ -53,5 +53,24 @@ class VillageService {
     if (!village) throw ErrorHandler.notFound({}, 'Village not found');
     return village;
   }
+  async getList() {
+    return await Village.aggregate([
+      { $lookup: { from: 'cities', localField: 'cityId', foreignField: '_id', as: 'city' } },
+      { $unwind: '$city' },
+      { $sort: { createdAt: -1 } },
+      {
+        $project: {
+          _id: 1,
+          nameEn: 1,
+          nameAr: 1,
+          city: {
+            _id: '$city._id',
+            nameEn: '$city.nameEn',
+            nameAr: '$city.nameAr',
+          },
+        },
+      },
+    ]);
+  }
 }
 module.exports = new VillageService();
