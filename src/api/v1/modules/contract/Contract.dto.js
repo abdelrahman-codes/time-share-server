@@ -1,6 +1,10 @@
 const Joi = require('joi');
 const { isValidObjectId, date } = require('../../Common/validations/custom');
-const { ContractPaymentMethodEnum, ContractMembershipTypeEnum } = require('../../../../enums/contract');
+const {
+  ContractPaymentMethodEnum,
+  ContractMembershipTypeEnum,
+  installmentsTypeEnum,
+} = require('../../../../enums/contract');
 const create = {
   body: Joi.object().keys({
     leadId: Joi.string().custom(isValidObjectId).required(),
@@ -12,6 +16,13 @@ const create = {
       is: ContractPaymentMethodEnum.Cash,
       then: Joi.forbidden(),
       otherwise: Joi.number().min(1).required(),
+    }),
+    installmentsType: Joi.alternatives().conditional('paymentMethod', {
+      is: ContractPaymentMethodEnum.Cash,
+      then: Joi.forbidden(),
+      otherwise: Joi.string()
+        .valid(installmentsTypeEnum.Monthly, installmentsTypeEnum.ThreeMonth, installmentsTypeEnum.SixMonth)
+        .required(),
     }),
     numberOfInstallments: Joi.alternatives().conditional('paymentMethod', {
       is: ContractPaymentMethodEnum.Cash,
@@ -28,7 +39,6 @@ const create = {
       then: Joi.forbidden(),
       otherwise: Joi.string().custom(date).required(),
     }),
-    cityId: Joi.string().custom(isValidObjectId).required(),
     villageId: Joi.string().custom(isValidObjectId).required(),
     membershipType: Joi.string()
       .valid(ContractMembershipTypeEnum.Dragon150, ContractMembershipTypeEnum.Dragon250)

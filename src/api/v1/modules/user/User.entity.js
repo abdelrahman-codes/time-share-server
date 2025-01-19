@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema(
     getFrom: { type: String, trim: true },
     contactMethod: { type: String, trim: true },
     ticketStatus: { type: String, trim: true },
+    contractPaidStatus: { type: String, trim: true },
     address: { type: String, trim: true },
     category: { type: String, trim: true },
     url: { type: String, trim: true, default: null },

@@ -9,13 +9,12 @@ class ContractService {
     const exists = await Contract.findOne({ leadId: data.leadId });
     if (exists) throw ErrorHandler.badRequest({}, 'Already have a contract');
 
-    const city = await CityService.getDetails(data.cityId);
     const village = await VillageService.getDetails(data.villageId);
-    if (village.cityId.toString() !== city._id.toString())
-      throw ErrorHandler.badRequest({}, 'This village does not belong to this city');
+    data.cityId = village.cityId;
 
     const contract = new Contract(data);
     await contract.save();
+    await LeadService.update(data.leadId, { contractPaidStatus: data.contractPaidStatus });
 
     return 'Contract created successfully';
   }

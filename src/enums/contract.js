@@ -2,8 +2,17 @@ const ContractPaymentMethodEnum = {
   Cash: 'Cash',
   Installments: 'Installments',
 };
+const ContractPaidStatusEnum = {
+  Pending: 'Pending',
+  Done: 'Done',
+};
 const ContractMembershipTypeEnum = {
   Dragon150: 'Dragon 150 Nights',
   Dragon250: 'Dragon 250 Nights',
 };
-module.exports = { ContractPaymentMethodEnum, ContractMembershipTypeEnum };
+const installmentsTypeEnum = {
+  Monthly: 'Monthly',
+  ThreeMonth: '3 Months',
+  SixMonth: '6 Months',
+};
+module.exports = { ContractPaymentMethodEnum, ContractMembershipTypeEnum, installmentsTypeEnum, ContractPaidStatusEnum };

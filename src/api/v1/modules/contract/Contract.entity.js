@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const contractSchema = mongoose.Schema(
   {
     paymentMethod: { type: String, trim: true },
-
+    contractPaidStatus: { type: String, trim: true },
+    
     totalAmount: { type: Number },
     downPayment: { type: Number },
     totalInstallments: { type: Number },
@@ -11,6 +12,7 @@ const contractSchema = mongoose.Schema(
     remainingAmount: { type: Number },
     totalPaid: { type: Number },
 
+    installmentsType: { type: String },
     numberOfInstallments: { type: Number },
     installmentStartIn: { type: Date },
     installmentEndsIn: { type: Date },
@@ -22,7 +24,7 @@ const contractSchema = mongoose.Schema(
     unitType: { type: String },
     startUsageWhenComplete: { type: Number },
     canReserve: { type: Boolean, default: true },
-    
+
     totalNights: { type: Number },
     usageNights: { type: Number },
     remainingNights: { type: Number },
