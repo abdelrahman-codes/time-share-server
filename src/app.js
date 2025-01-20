@@ -43,6 +43,9 @@ app.use('/api/v1', V1Routes);
 // adding limiter for successful requests (max 200 in 5 minutes)
 // app.use(LimiterMiddleware.successfulRequestsLimiter);
 
+// setup for upload images
+app.use('/public', express.static('public'));
+
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
   throw ErrorHandler.notFound({}, 'Invalid End Point');
@@ -51,8 +54,5 @@ app.use((req, res, next) => {
 // Common error handler
 app.use(ErrorMiddleware);
 
-// setup for upload images
-// app.use('/public', express.static('public'));
-app.use('/public', express.static(path.join(__dirname, 'public')));
 
 module.exports = app;
