@@ -54,5 +54,4 @@ app.use((req, res, next) => {
 // Common error handler
 app.use(ErrorMiddleware);
 
-
 module.exports = app;
