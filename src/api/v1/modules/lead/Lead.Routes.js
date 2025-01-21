@@ -8,7 +8,7 @@ const CommonDto = require('../../Common/validations/Validation');
 router.post(
   '/',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
-  MulterMiddleware('single', './public/media', 'image', 'url'),
+  MulterMiddleware('single', 'public', 'image', 'url'),
   ValidationMiddleware(LeadDto.createDto),
   LeadController.create,
 );
@@ -16,7 +16,7 @@ router.post(
 router.put(
   '/:_id',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
-  MulterMiddleware('single', './public/media', 'image', 'url'),
+  MulterMiddleware('single', 'public', 'image', 'url'),
   ValidationMiddleware(LeadDto.updateDto),
   LeadController.update,
 );

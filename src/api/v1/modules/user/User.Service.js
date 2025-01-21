@@ -17,7 +17,7 @@ class UserService {
       throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists},'Mobile number already exists');
     }
     data.username = data.username.toLowerCase();
-    if (data?.url) data.url = process.env.BASE_URL + data.url;
+    // if (data?.url) data.url = process.env.BASE_URL + data.url;
     const newUser = new User(data);
     await newUser.save();
     return newUser.toObject();
@@ -35,7 +35,7 @@ class UserService {
     return user;
   }
   async updateUser(_id, data) {
-    if (data?.url) data.url = process.env.BASE_URL + data.url;
+    // if (data?.url) data.url = process.env.BASE_URL + data.url;
     if (data?.mobile) {
       const exists = await User.findOne({ mobile: data.mobile, _id: { $ne: _id } });
       if (exists) {

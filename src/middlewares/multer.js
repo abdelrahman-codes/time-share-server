@@ -1,7 +1,6 @@
 // uploadMiddleware
 const { MulterHelper } = require('../helpers/index');
 const ErrorHandler = require('../enums/errors');
-const fs = require('fs');
 
 const uploadMiddleware = (uploadType, storagePath, fileType, fieldName, maxCount) => {
   return (req, res, next) => {
@@ -17,7 +16,7 @@ const uploadMiddleware = (uploadType, storagePath, fileType, fieldName, maxCount
         upload = MulterHelper.uploadAll(storagePath);
         break;
       default:
-        throw ErrorHandler.badRequest({},'Invalid file type.');
+        throw ErrorHandler.badRequest({}, 'Invalid file type.');
     }
     let multerUpload;
     switch (uploadType) {
@@ -39,14 +38,14 @@ const uploadMiddleware = (uploadType, storagePath, fileType, fieldName, maxCount
         return res.status(400).json({ success: false, statusCode: 400, message: err.message, error: 'Invalid input' });
 
       if (req.file) {
-        req.body[fieldName] = req.file.filename;
+        req.body[fieldName] = req.file.path;
       } else if (req.files) {
         if (Array.isArray(req.files)) {
-          req.body[fieldName] = req.files.map((file) => file.filename);
+          req.body[fieldName] = req.files.map((file) => file.path);
         } else {
           Object.keys(req.files).forEach((key, index) => {
-            if (fieldName[index]?.maxCount == 1) req.body[key] = req.files[key][0].filename;
-            else req.body[key] = req.files[key].map((file) => file.filename);
+            if (fieldName[index]?.maxCount == 1) req.body[key] = req.files[key][0].path;
+            else req.body[key] = req.files[key].map((file) => file.path);
           });
         }
       }

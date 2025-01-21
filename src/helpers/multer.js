@@ -1,26 +1,22 @@
-// config/multerConfig.js
-
 const multer = require('multer');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const Fs = require('@supercharge/fs');
 const ErrorHandler = require('../enums/errors');
+const { v2: cloudinary } = require('cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Dynamic storage engine
-const getStorage = (destinationPath, isCv = false) => {
-  return multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, destinationPath);
-    },
-    filename: function (req, file, cb) {
-      let ext = file.mimetype.split('/')[1];
-      if (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        ext = 'docx';
-      } else if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-        ext = 'xlsx';
-      }
-      cb(null, uuidv4() + '.' + ext);
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET_KEY,
+});
+
+// Dynamic storage engine for Cloudinary
+const getCloudinaryStorage = (folder, allowedFormats) => {
+  return new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: folder || 'uploads',
+      allowed_formats: allowedFormats || ['jpeg', 'jpg', 'png', 'pdf', 'docx', 'xlsx'], // Adjust formats as needed
+      public_id: (req, file) => `${file.fieldname}-${Date.now()}`,
     },
   });
 };
@@ -28,38 +24,38 @@ const getStorage = (destinationPath, isCv = false) => {
 // Check file type for images
 function checkImageType(file, cb) {
   const filetypes = /jpeg|jpg|png/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const extname = filetypes.test(file.originalname.toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(ErrorHandler.badRequest({},'Only images are allowed'));
+    cb(ErrorHandler.badRequest({}, 'Only images are allowed'));
   }
 }
 
-// Check file type for documents, PDFs, and Excel files
+// Check file type for documents
 function checkDocsType(file, cb) {
   const filetypes = /pdf|doc|docx|xls|xlsx/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const extname = filetypes.test(file.originalname.toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(ErrorHandler.badRequest({},'Documents Only (PDF, DOC, DOCX, XLS, XLSX)!'));
+    cb(ErrorHandler.badRequest({}, 'Documents Only (PDF, DOC, DOCX, XLS, XLSX)!'));
   }
 }
 
-// Check file type for all files
+// General file type check (no restrictions)
 function checkAllTypes(file, cb) {
   cb(null, true);
 }
 
-// Init upload with different file type checks
-const upload = (destinationPath, fileFilter, isCv = false) => {
+// Init upload with different file type checks for Cloudinary
+const upload = (folder, fileFilter, allowedFormats) => {
   return multer({
-    storage: getStorage(destinationPath, isCv),
+    storage: getCloudinaryStorage(folder, allowedFormats),
     limits: { fileSize: 10000000 }, // 10MB limit
     fileFilter: function (req, file, cb) {
       fileFilter(file, cb);
@@ -69,7 +65,7 @@ const upload = (destinationPath, fileFilter, isCv = false) => {
 
 // Export different configurations
 module.exports = {
-  uploadImage: (destinationPath) => upload(destinationPath, checkImageType),
-  uploadDocs: (destinationPath) => upload(destinationPath, checkDocsType),
-  uploadAll: (destinationPath) => upload(destinationPath, checkAllTypes),
+  uploadImage: (folder) => upload(folder, checkImageType, ['jpeg', 'jpg', 'png']),
+  uploadDocs: (folder) => upload(folder, checkDocsType, ['pdf', 'docx', 'xlsx']),
+  uploadAll: (folder) => upload(folder, checkAllTypes),
 };

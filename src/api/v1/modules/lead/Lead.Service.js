@@ -28,7 +28,7 @@ class LeadService {
         throw ErrorHandler.badRequest({ nationalId: ValidationTypes.AlreadyExists }, 'National id already exists');
       }
     }
-    if (data?.url) data.url = process.env.BASE_URL + data.url;
+    // if (data?.url) data.url = process.env.BASE_URL + data.url;
     data.ticketStatus = TicketStatusEnum.Done;
     data.password = GenerateRandomString(8);
     if (!data.nationality) data.nationality = NationalityEnum.Egyptian;
@@ -56,7 +56,7 @@ class LeadService {
   }
   async update(_id, data) {
     const user = await this.getDetails(_id);
-    if (data?.url) data.url = process.env.BASE_URL + data.url;
+    // if (data?.url) data.url = process.env.BASE_URL + data.url;
     if (data?.mobile) {
       const exists = await User.findOne({ mobile: data.mobile, _id: { $ne: _id } });
       if (exists) {
