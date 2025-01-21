@@ -11,10 +11,10 @@ class UserService {
     if (user) {
       if (user.username === data.username.toLowerCase()) {
         logger.warn(`Attempt to create a user with existing username: ${data.username}`);
-        throw ErrorHandler.badRequest({ username: ValidationTypes.AlreadyExists},'Username already exists');
+        throw ErrorHandler.badRequest({ username: ValidationTypes.AlreadyExists }, 'Username already exists');
       }
       logger.warn(`Attempt to create a user with existing mobile: ${data.mobile}`);
-      throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists},'Mobile number already exists');
+      throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists }, 'Mobile number already exists');
     }
     data.username = data.username.toLowerCase();
     // if (data?.url) data.url = process.env.BASE_URL + data.url;
@@ -31,20 +31,22 @@ class UserService {
     const user = await User.findOne({ role: { $ne: Roles.Lead }, _id }).select(
       'firstName lastName mobile url role rule active username email',
     );
-    if (!user) throw ErrorHandler.notFound({},'User not found');
-    return user;
+    if (!user) throw ErrorHandler.notFound({}, 'User not found');
+    const PermissionService = require('../permission/Permission.Service');
+    const permissions = await PermissionService.userPermissions(_id);
+    return { ...user.toObject(), permissions };
   }
   async updateUser(_id, data) {
     // if (data?.url) data.url = process.env.BASE_URL + data.url;
     if (data?.mobile) {
       const exists = await User.findOne({ mobile: data.mobile, _id: { $ne: _id } });
       if (exists) {
-        throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists},'Mobile number already exists');
+        throw ErrorHandler.badRequest({ mobile: ValidationTypes.AlreadyExists }, 'Mobile number already exists');
       }
     }
     const user = await User.findOneAndUpdate({ _id }, data);
     if (!user) {
-      throw ErrorHandler.notFound({},'User not found');
+      throw ErrorHandler.notFound({}, 'User not found');
     }
     if (data?.url) {
       const fileName = path.basename(user?.url);
@@ -55,10 +57,10 @@ class UserService {
   }
   async toggleActiveStatus(_id) {
     const user = await User.findOne({ _id, role: { $ne: Roles.Lead } });
-    if (!user) throw ErrorHandler.notFound({},'User not found');
+    if (!user) throw ErrorHandler.notFound({}, 'User not found');
     const updated = await User.findOneAndUpdate({ _id, role: { $ne: Roles.Lead } }, { active: !user.active });
     if (!updated)
-      throw ErrorHandler.internalServerError({},'An error occurred while updating the resource. Please try again later.');
+      throw ErrorHandler.internalServerError({}, 'An error occurred while updating the resource. Please try again later.');
     return `User is now ${updated.active ? 'inactive' : 'active'}.`;
   }
 }
