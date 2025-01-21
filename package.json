@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prebuild": "npm install --legacy-peer-deps",
+    "build": "npm run build"
   },
   "author": "Abdelrahman Abdallah",
   "license": "ISC",
