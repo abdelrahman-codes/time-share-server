@@ -6,9 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "format": "prettier --write .",
-    "prebuild": "npm install --legacy-peer-deps",
-    "build": "npm run build"
+    "format": "prettier --write ."
   },
   "author": "Abdelrahman Abdallah",
   "license": "ISC",
@@ -17,7 +15,7 @@
     "axios": "^1.7.4",
     "bcrypt": "^5.1.0",
     "child_process": "^1.0.2",
-    "cloudinary": "^2.5.1",
+    "cloudinary": "^1.21.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "excel4node": "^1.8.2",
