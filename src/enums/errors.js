@@ -8,19 +8,19 @@ class CustomError extends Error {
   }
 }
 const ErrorHandler = {
-  internalServerError(error={},message = ErrorTypes.InternalServerError) {
-    return new CustomError(500, message,error);
+  internalServerError(error = {}, message = ErrorTypes.InternalServerError) {
+    return new CustomError(500, message, error);
   },
-  badRequest(error={},message = ErrorTypes.BadRequest) {
-    return new CustomError(400, message,error);
+  badRequest(error = {}, message = ErrorTypes.BadRequest) {
+    return new CustomError(400, message, error);
   },
-  notFound(error={},message = ErrorTypes.NotFound) {
+  notFound(error = {}, message = ErrorTypes.NotFound) {
     return new CustomError(404, message, error);
   },
-  unauthorized(error={},message = ErrorTypes.Unauthorized) {
+  unauthorized(error = {}, message = ErrorTypes.Unauthorized) {
     return new CustomError(401, message, error);
   },
-  dynamicError(code = 500, message = ErrorTypes.InternalServerError, error={}) {
+  dynamicError(code = 500, message = ErrorTypes.InternalServerError, error = {}) {
     return new CustomError(code, message, error);
   },
 };

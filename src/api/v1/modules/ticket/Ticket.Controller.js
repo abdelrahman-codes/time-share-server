@@ -6,10 +6,10 @@ class TicketController {
     try {
       req.body.createdBy = req.token.sub;
       req.body.status = TicketStatusEnum.InProgress;
-      req.body.notes={
+      req.body.notes = {
         content: req.body.content,
         createdBy: req.token.sub,
-      }
+      };
       const data = await TicketService.create(req.body);
       logger.info('New ticket created');
       return res.sendResponse(data);

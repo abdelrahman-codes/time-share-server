@@ -7,4 +7,4 @@ const ErrorTypes = {
   NotFound: 'Not Found',
   Unauthorized: 'Unauthorized',
 };
-module.exports = {ErrorTypes, ValidationTypes};
+module.exports = { ErrorTypes, ValidationTypes };

@@ -35,4 +35,3 @@ npm start
 ## Credits
 
 [Abdelrahman Abdallah](https://code-sandy-delta.vercel.app/)
-  

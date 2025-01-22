@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const villageSchema = mongoose.Schema(
   {
-    nameAr:{type: String},
-    nameEn:{type: String},
+    nameAr: { type: String },
+    nameEn: { type: String },
     normalizedNameAr: { type: String },
     normalizedNameEn: { type: String },
     cityId: { type: mongoose.Schema.Types.ObjectId, ref: 'City' },
@@ -31,8 +31,6 @@ villageSchema.pre('findOneAndUpdate', async function (next) {
 
   next();
 });
-
-
 
 const Village = mongoose.models.Village || mongoose.model('Village', villageSchema);
 module.exports = Village;

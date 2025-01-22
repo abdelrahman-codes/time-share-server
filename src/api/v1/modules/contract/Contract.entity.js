@@ -4,7 +4,7 @@ const contractSchema = mongoose.Schema(
   {
     paymentMethod: { type: String, trim: true },
     contractPaidStatus: { type: String, trim: true },
-    
+
     totalAmount: { type: Number },
     downPayment: { type: Number },
     totalInstallments: { type: Number },
