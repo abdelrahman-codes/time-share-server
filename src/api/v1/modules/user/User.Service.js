@@ -29,7 +29,7 @@ class UserService {
   }
   async getDetails(_id, withoutPermissions) {
     const user = await User.findOne({ role: { $ne: Roles.Lead }, _id }).select(
-      'firstName lastName mobile url role rule active username email',
+      'firstName lastName mobile url role rule active username email newNotification',
     );
     if (!user) throw ErrorHandler.notFound({}, 'User not found');
     if (withoutPermissions) return user.toObject();

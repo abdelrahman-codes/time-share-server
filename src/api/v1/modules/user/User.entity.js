@@ -25,6 +25,7 @@ const userSchema = mongoose.Schema(
     // profile privacy setting
     role: { type: String, default: Roles.Lead },
     active: { type: Boolean, default: true },
+    newNotification: { type: Boolean, default: false },
   },
   {
     timestamps: true,

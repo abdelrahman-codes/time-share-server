@@ -15,6 +15,12 @@ class NotificationService {
     return notification;
   }
   async getAll(userId, isAdmin, page, limit) {
+    const UserService = require('../user/User.Service');
+    const LeadService = require('../lead/Lead.Service');
+
+    if (isAdmin) await UserService.updateUser(userId, { newNotification: false });
+    else await LeadService.update(userId, { newNotification: false });
+    
     const options = {
       page,
       limit,
