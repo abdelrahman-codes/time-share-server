@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 router.get('/', function (req, res) {
+  process.exit(1)
   res.json({ message: 'welcome to version 1' });
 });
 
