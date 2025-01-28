@@ -26,7 +26,14 @@ const createNoteDto = {
     content: Joi.string().required(),
   }),
 };
+const assignDto = {
+  body: Joi.object().keys({
+    ticketId: Joi.string().custom(isValidObjectId).required(),
+    userId: Joi.string().custom(isValidObjectId).required(),
+  }),
+};
 module.exports = {
   createTicketDto,
   createNoteDto,
+  assignDto,
 };

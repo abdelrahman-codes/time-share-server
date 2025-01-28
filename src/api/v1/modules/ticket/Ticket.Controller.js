@@ -47,6 +47,14 @@ class TicketController {
       next(error);
     }
   }
+  async assign(req, res, next) {
+    try {
+      const data = await TicketService.assign(req.body, req.currentUser);
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new TicketController();

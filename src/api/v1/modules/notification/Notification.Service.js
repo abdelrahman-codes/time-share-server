@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const ErrorHandler = require('../../../../enums/errors');
 const { notificationMediumEnum } = require('../../../../enums/notification');
 const { PaginateAggregateHelper } = require('../../../../helpers');
@@ -21,7 +22,10 @@ class NotificationService {
     };
 
     const matchQuery = {
-      $or: [{ receivers: userId }, ...(isAdmin ? [{ forAllAdmins: true }] : [{ forAllMobileUsers: true }])],
+      $or: [
+        { receivers: new mongoose.Types.ObjectId(userId) },
+        ...(isAdmin ? [{ forAllAdmins: true }] : [{ forAllMobileUsers: true }]),
+      ],
       notificationMedium: {
         $in: isAdmin
           ? [notificationMediumEnum.Web, notificationMediumEnum.Both]
@@ -32,7 +36,16 @@ class NotificationService {
     const pipeline = [
       { $match: matchQuery },
       { $lookup: { from: 'users', localField: 'sender', foreignField: '_id', as: 'senderDetails' } },
-      { $addFields: { isRead: { $in: [userId, '$isReadBy'] }, sender: { $arrayElemAt: ['$senderDetails', 0] } } },
+      {
+        $addFields: {
+          isRead: { $in: [new mongoose.Types.ObjectId(userId), '$isReadBy'] },
+          sender: {
+            _id: { $arrayElemAt: ['$senderDetails._id', 0] },
+            name: { $arrayElemAt: ['$senderDetails.name', 0] },
+            url: { $arrayElemAt: ['$senderDetails.url', 0] },
+          },
+        },
+      },
       {
         $project: {
           type: 1,
@@ -41,12 +54,17 @@ class NotificationService {
           notificationMedium: 1,
           refPage: 1,
           createdAt: 1,
-          sender: { 'sender._id': 1, 'sender.name': 1, 'sender.url': 1 },
+          sender: 1,
         },
       },
     ];
     const paginatedResult = await PaginateAggregateHelper(Notification, pipeline, options);
     return paginatedResult;
+  }
+  async markAsRead(data) {
+    const notification = await Notification.findByIdAndUpdate(data.notificationId, { $push: { isReadBy: data.userId } });
+    if (!notification) throw ErrorHandler.notFound();
+    return 'Notification marked as read successfully.';
   }
 }
 module.exports = new NotificationService();

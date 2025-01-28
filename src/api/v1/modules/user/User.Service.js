@@ -27,11 +27,12 @@ class UserService {
       .select('name url role active username')
       .sort('-createdAt');
   }
-  async getDetails(_id) {
+  async getDetails(_id, withoutPermissions) {
     const user = await User.findOne({ role: { $ne: Roles.Lead }, _id }).select(
       'firstName lastName mobile url role rule active username email',
     );
     if (!user) throw ErrorHandler.notFound({}, 'User not found');
+    if (withoutPermissions) return user.toObject();
     const PermissionService = require('../permission/Permission.Service');
     const permissions = await PermissionService.userPermissions(_id);
     return { ...user.toObject(), permissions };

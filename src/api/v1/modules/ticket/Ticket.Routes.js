@@ -29,4 +29,10 @@ router.get(
   ValidationMiddleware(CommonDto._idDto),
   TicketController.getAll,
 );
+router.post(
+  '/assign',
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
+  ValidationMiddleware(TicketDto.assignDto),
+  TicketController.assign,
+);
 module.exports = router;

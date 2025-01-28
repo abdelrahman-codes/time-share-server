@@ -27,6 +27,12 @@ module.exports = (allowedRoles, feature, accessLevel) => {
         }
       }
       req.token = decoded;
+      req.currentUser = {
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        role: user.role,
+      };
       return next();
     });
   };

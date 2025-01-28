@@ -12,6 +12,16 @@ class NotificationController {
       next(error);
     }
   }
+  async markAsRead(req, res, next) {
+    try {
+      const userId = req.token.sub,
+        notificationId = req.params._id;
+      const data = await NotificationService.markAsRead({ notificationId, userId });
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new NotificationController();

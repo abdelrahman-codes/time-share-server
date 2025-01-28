@@ -1,8 +1,10 @@
 const { default: mongoose } = require('mongoose');
 const ErrorHandler = require('../../../../enums/errors');
-const { TicketStatusEnum, TicketTypeEnum } = require('../../../../enums/ticket');
+const { TicketStatusEnum } = require('../../../../enums/ticket');
 const LeadService = require('../lead/Lead.Service');
+const NotificationService = require('../notification/Notification.Service');
 const Ticket = require('./Ticket.entity');
+const { notificationTypeEnum } = require('../../../../enums/notification');
 class TicketService {
   async create(data) {
     const lead = await LeadService.getDetails(data.leadId);
@@ -106,6 +108,25 @@ class TicketService {
       { $project: { sortKey: 0 } },
     ]);
     return tickets;
+  }
+  async assign(data, currentUser) {
+    const ticket = await Ticket.findOne({ _id: data.ticketId });
+    if (!ticket) throw ErrorHandler.notFound();
+    if (ticket.status === TicketStatusEnum.Resolved) {
+      throw ErrorHandler.badRequest({}, 'Cannot assign to a resolved ticket');
+    }
+    const UserService = require('../user/User.Service');
+    await UserService.getDetails(data.userId, true);
+    
+    const notification = {
+      type: notificationTypeEnum.AssignedTicket,
+      message: `${currentUser.name} sent you ticket Number ${ticket._id}`,
+      refPage: `/leads/${ticket.leadId}`,
+      sender: currentUser._id,
+      receivers: data.userId,
+    };
+    await NotificationService.create(notification);
+    return 'Ticket assigned successfully';
   }
 }
 module.exports = new TicketService();

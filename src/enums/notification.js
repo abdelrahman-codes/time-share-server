@@ -3,4 +3,9 @@ const notificationMediumEnum = {
   Web: 'Web',
   Mobile: 'Mobile',
 };
-module.exports = { notificationMediumEnum };
+const notificationTypeEnum = {
+  ReservationRequest: 'Reservation Request',
+  Payment: 'Payment',
+  AssignedTicket: 'Assigned Ticket',
+};
+module.exports = { notificationMediumEnum, notificationTypeEnum };
