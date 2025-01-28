@@ -1,29 +1,44 @@
 require('dotenv').config();
-const os = require('os');
-const cluster = require('cluster');
 const http = require('http');
 const app = require('./src/app');
+const setupSocketIo = require('./src/socket');
 
 const port = process.env.PORT || 8000;
-const numCPUs = os.cpus().length;
 
-if (cluster.isMaster) {
-  console.log(`Master ${process.pid} is running`);
+const startServer = () => {
+  const server = http.createServer(app);
 
-  // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    // Optionally restart the worker
-    cluster.fork();
-  });
-} else {
-  const server = http.createServer(app); // Use the HTTP server
+  // Initialize Socket.IO
+  const io = setupSocketIo(server, app);
 
   server.listen(port, () => {
-    console.log(`Worker ${process.pid} is listening on port ${port}`);
+    console.log(`Server is listening on port ${port}`);
   });
-}
+
+  // Handle server errors to restart gracefully
+  server.on('error', (error) => {
+    console.error('Server encountered an error:', error);
+    // Optional: Add logic to gracefully close resources if needed
+    setTimeout(startServer, 1000); // Restart server after 1 second
+  });
+
+  // Graceful shutdown on process termination
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received: shutting down gracefully');
+    server.close(() => {
+      console.log('Server shut down');
+      process.exit(0);
+    });
+  });
+
+  process.on('SIGINT', () => {
+    console.log('SIGINT received: shutting down gracefully');
+    server.close(() => {
+      console.log('Server shut down');
+      process.exit(0);
+    });
+  });
+
+  return server;
+};
+startServer();
