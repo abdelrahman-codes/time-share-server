@@ -4,7 +4,7 @@
   "description": "Backend Server Side is a nodejs project that uses express framework to develop REST-APIs that communicate with MongoDB Through Mongoose library.",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --env production",
+    "start": "npm i pm2 -g && pm2 start index.js --env production",
     "restart": "pm2 restart index.js",
     "stop": "pm2 stop index.js",
     "dev": "nodemon index.js",
