@@ -11,6 +11,7 @@ const leadRoutes = require('./lead/Lead.Routes');
 const ticketRoutes = require('./ticket/Ticket.Routes');
 const { CityRoutes, VillageRoutes } = require('./location/routes');
 const contractRoutes = require('./contract/Contract.Routes');
+const notificationRoutes = require('./notification/Notification.Routes');
 
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
@@ -20,5 +21,6 @@ router.use('/ticket', ticketRoutes);
 router.use('/city', CityRoutes);
 router.use('/village', VillageRoutes);
 router.use('/contract', contractRoutes);
+router.use('/notification', notificationRoutes);
 
 module.exports = router;
