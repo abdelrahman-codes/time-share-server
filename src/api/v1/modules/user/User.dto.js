@@ -11,7 +11,7 @@ const createUserDto = {
     rule: Joi.string().required(),
     username: Joi.string().required(),
     password: Joi.string().custom(password).required(),
-    role: Joi.string().required().valid(Roles.Owner, Roles.Admin),
+    role: Joi.string().required().valid(Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor),
   }),
 };
 const updateUserDto = {
@@ -27,7 +27,7 @@ const updateUserDto = {
       email: Joi.string().custom(email).optional(),
       rule: Joi.string().optional(),
       password: Joi.string().custom(password).optional(),
-      role: Joi.string().optional().valid(Roles.Owner, Roles.Admin),
+      role: Joi.string().optional().valid(Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor),
     })
     .or('firstName', 'lastName', 'mobile', 'email', 'rule', 'password', 'role', 'url')
     .messages({ 'object.missing': 'At least one update field must be provided' }),

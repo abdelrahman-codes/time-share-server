@@ -14,7 +14,7 @@ router.post(
 );
 router.put(
   '/',
-  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member]),
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor]),
   MulterS3Middleware('single', 'image', 'url'),
   ValidationMiddleware(UserDto.updateMyProfileDto),
   UserController.updateUser,
@@ -26,8 +26,12 @@ router.put(
   ValidationMiddleware(UserDto.updateUserDto),
   UserController.updateUser,
 );
-router.get('/', AuthMiddleware(Roles.Owner), UserController.get);
-router.get('/details', AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member]), UserController.getDetails);
+router.get('/', AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor]), UserController.get);
+router.get(
+  '/details',
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor]),
+  UserController.getDetails,
+);
 router.get('/details/:_id', AuthMiddleware(Roles.Owner), ValidationMiddleware(CommonDto._idDto), UserController.getDetails);
 router.patch(
   '/toggle-hold/:_id',
