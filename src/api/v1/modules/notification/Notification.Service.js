@@ -57,7 +57,6 @@ class NotificationService {
           type: 1,
           message: 1,
           isRead: 1,
-          notificationMedium: 1,
           refPage: 1,
           createdAt: 1,
           sender: 1,

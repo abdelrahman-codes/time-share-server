@@ -116,7 +116,7 @@ class TicketService {
       throw ErrorHandler.badRequest({}, 'Cannot assign to a resolved ticket');
     }
     const UserService = require('../user/User.Service');
-    await UserService.updateUser(data.userId, { newNotification: true });
+    const user = await UserService.updateUser(data.userId, { newNotification: true });
 
     const notification = {
       type: notificationTypeEnum.AssignedTicket,
@@ -126,6 +126,9 @@ class TicketService {
       receivers: data.userId,
     };
     await NotificationService.create(notification);
+    const content = `${user.name} تم اضافة`;
+    ticket.notes.push({ createdBy: currentUser._id, content });
+    await ticket.save();
     return 'Ticket assigned successfully';
   }
 }
