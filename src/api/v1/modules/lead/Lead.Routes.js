@@ -33,4 +33,11 @@ router.get(
   LeadController.getDetails,
 );
 
+router.post(
+  '/username/:_id',
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
+  ValidationMiddleware(CommonDto._idDto),
+  LeadController.createUserName,
+);
+
 module.exports = router;

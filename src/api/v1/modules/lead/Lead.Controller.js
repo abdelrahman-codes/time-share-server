@@ -81,6 +81,14 @@ class LeadController {
       next(error);
     }
   }
+  async createUserName(req, res, next) {
+    try {
+      const data = await LeadService.createUserName(req.params._id);
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new LeadController();

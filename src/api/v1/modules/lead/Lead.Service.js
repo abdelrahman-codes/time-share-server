@@ -14,6 +14,7 @@ const {
 const { GenerateRandomString } = require('../../../../utils');
 const { PaginateHelper } = require('../../../../helpers');
 const { ValidationTypes } = require('../../../../enums/error-types');
+const ContractService = require('../contract/Contract.Service');
 class LeadService {
   async create(data) {
     const user = await User.findOne({ mobile: data.mobile });
@@ -82,6 +83,30 @@ class LeadService {
       if (fileName) deleteFile(`./public/media/${fileName}`);
     }
     return await this.getDetails(_id);
+  }
+  async createUserName(_id) {
+    const user = await User.findOne({ _id, role: Roles.Lead });
+    if (!user) throw ErrorHandler.notFound();
+    if (user.username) throw ErrorHandler.dynamicError(409, 'This user already has a username assigned.');
+    if (!user.firstName)
+      throw ErrorHandler.badRequest({}, 'First Name Missing: Please provide a first name for this user to proceed.');
+    if (!user.lastName)
+      throw ErrorHandler.badRequest({}, 'Last Name Missing: Please provide a last name for this user to proceed.');
+
+    const hasContract = await ContractService.getDetails(_id);
+    if (!hasContract)
+      throw ErrorHandler.badRequest(
+        {},
+        'A contract is required to generate a username for this lead. Please ensure the lead has an associated contract.',
+      );
+    const userCount = await User.countDocuments({});
+
+    const username =
+      user.firstName.replace(/\s+/g, '').toLowerCase() + user.lastName.replace(/\s+/g, '').toLowerCase() + (userCount + 1);
+    user.username = username;
+    await user.save();
+
+    return username;
   }
 }
 module.exports = new LeadService();
