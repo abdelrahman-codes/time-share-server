@@ -40,4 +40,11 @@ router.post(
   LeadController.createUserName,
 );
 
+router.patch(
+  '/password/:_id',
+  AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
+  ValidationMiddleware(CommonDto._idDto),
+  LeadController.resetPassword,
+);
+
 module.exports = router;

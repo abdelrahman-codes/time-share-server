@@ -89,6 +89,15 @@ class LeadController {
       next(error);
     }
   }
+
+  async resetPassword(req, res, next) {
+    try {
+      const data = await LeadService.resetPassword(req.params._id);
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new LeadController();

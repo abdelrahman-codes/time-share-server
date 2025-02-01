@@ -106,7 +106,33 @@ class LeadService {
     user.username = username;
     await user.save();
 
-    return username;
+    return {
+      message: 'Username generated successfully',
+      username,
+    };
+  }
+
+  async resetPassword(_id) {
+    const user = await User.findOne({ _id, role: Roles.Lead });
+    if (!user) throw ErrorHandler.notFound();
+
+    if (!user.firstName)
+      throw ErrorHandler.badRequest({}, 'First Name Missing: Please provide a first name for this user to proceed.');
+    if (!user.lastName)
+      throw ErrorHandler.badRequest({}, 'Last Name Missing: Please provide a last name for this user to proceed.');
+
+    const mobile = user.mobile.startsWith('+') ? user.mobile.slice(1) : user.mobile;
+    const defaultPassword =
+      user.firstName.replace(/\s+/g, '').charAt(0) + user.lastName.replace(/\s+/g, '').charAt(0) + mobile;
+
+    user.password = defaultPassword;
+
+    await user.save();
+
+    return {
+      message: 'Password updated successfully',
+      password: defaultPassword,
+    };
   }
 }
 module.exports = new LeadService();
