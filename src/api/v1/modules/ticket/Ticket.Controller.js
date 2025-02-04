@@ -1,5 +1,5 @@
 const logger = require('../../../../config/logger');
-const { TicketTypeEnum, TicketStatusEnum } = require('../../../../enums/ticket');
+const { TicketStatusEnum, TicketContentTypeEnum } = require('../../../../enums/ticket');
 const TicketService = require('./Ticket.Service');
 class TicketController {
   async create(req, res, next) {
@@ -20,6 +20,7 @@ class TicketController {
   async createNote(req, res, next) {
     try {
       req.body.createdBy = req.token.sub;
+      req.body.type = TicketContentTypeEnum.Note;
       const data = await TicketService.createNote(req.body);
       return res.sendResponse(data);
     } catch (error) {

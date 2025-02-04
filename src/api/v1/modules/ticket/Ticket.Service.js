@@ -1,6 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const ErrorHandler = require('../../../../enums/errors');
-const { TicketStatusEnum } = require('../../../../enums/ticket');
+const { TicketStatusEnum, TicketContentTypeEnum } = require('../../../../enums/ticket');
 const LeadService = require('../lead/Lead.Service');
 const NotificationService = require('../notification/Notification.Service');
 const Ticket = require('./Ticket.entity');
@@ -41,6 +41,7 @@ class TicketService {
     }
     ticket.status = TicketStatusEnum.Resolved;
     data.content = 'تم حل المشكلة';
+    data.type = TicketContentTypeEnum.Resolve;
     ticket.notes.push(data);
     await ticket.save();
     const openTicket = await Ticket.findOne({
@@ -65,6 +66,7 @@ class TicketService {
           status: 1,
           createdAt: 1,
           'notes._id': 1,
+          'notes.type': 1,
           'notes.content': 1,
           'notes.createdAt': 1,
           'createdByUser._id': 1,
@@ -84,6 +86,7 @@ class TicketService {
           notes: {
             $push: {
               _id: '$notes._id',
+              type: { $ifNull: ['$notes.type', TicketContentTypeEnum.Create] },
               content: '$notes.content',
               createdAt: '$notes.createdAt',
               createdBy: { $arrayElemAt: ['$createdByUser', 0] },
@@ -127,7 +130,7 @@ class TicketService {
     };
     await NotificationService.create(notification);
     const content = `${user.name} تم اضافة`;
-    ticket.notes.push({ createdBy: currentUser._id, content });
+    ticket.notes.push({ createdBy: currentUser._id, content, type: TicketContentTypeEnum.Mention });
     await ticket.save();
     return 'Ticket assigned successfully';
   }

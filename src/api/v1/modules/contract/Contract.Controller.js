@@ -13,9 +13,13 @@ class ContractController {
       data.createdBy = req.token.sub;
       data.totalPaid = data.totalAmount;
       data.totalNights = 150;
+      data.nightsCanUse = 150;
       data.contractPaidStatus = ContractPaidStatusEnum.Done;
 
-      if (data.membershipType === ContractMembershipTypeEnum.Dragon250) data.totalNights = 250;
+      if (data.membershipType === ContractMembershipTypeEnum.Dragon200) {
+        data.totalNights = 250;
+        data.nightsCanUse = 250;
+      }
       data.remainingNights = data.totalNights;
       data.usageNights = 0;
 
@@ -24,8 +28,10 @@ class ContractController {
           throw ErrorHandler.badRequest({}, 'Down payment must be less than total amount');
 
         // handle reservations access
-        const paidPercentage = (data.downPayment / data.totalAmount) * 100;
-        if (paidPercentage < data.startUsageWhenComplete) data.canReserve = false;
+        // const paidPercentage = (data.downPayment / data.totalAmount) * 100;
+        // if (paidPercentage < data.startUsageWhenComplete) data.canReserve = true;
+
+        data.nightsCanUse = Math.floor((data.downPayment / data.totalAmount) * data.totalNights);
 
         //handle payments
         data.contractPaidStatus = ContractPaidStatusEnum.Pending;

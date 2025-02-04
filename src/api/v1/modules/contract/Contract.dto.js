@@ -41,7 +41,7 @@ const create = {
     }),
     villageId: Joi.string().custom(isValidObjectId).required(),
     membershipType: Joi.string()
-      .valid(ContractMembershipTypeEnum.Dragon150, ContractMembershipTypeEnum.Dragon250)
+      .valid(ContractMembershipTypeEnum.Dragon100, ContractMembershipTypeEnum.Dragon200)
       .required(),
     individuals: Joi.number().valid(2, 4, 6, 8).required(),
     unitType: Joi.string().valid('A', 'B', 'C').required(),

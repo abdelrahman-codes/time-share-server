@@ -28,6 +28,7 @@ const contractSchema = mongoose.Schema(
     totalNights: { type: Number },
     usageNights: { type: Number },
     remainingNights: { type: Number },
+    nightsCanUse: { type: Number },
 
     cityId: { type: mongoose.Schema.Types.ObjectId, ref: 'City' },
     villageId: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },

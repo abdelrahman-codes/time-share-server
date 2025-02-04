@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { TicketTypeEnum } = require('../../../../enums/ticket');
+const { TicketContentTypeEnum } = require('../../../../enums/ticket');
 
 const ticketSchema = mongoose.Schema(
   {
@@ -7,6 +7,7 @@ const ticketSchema = mongoose.Schema(
     status: { type: String, trim: true },
     notes: [
       {
+        type: { type: String, trim: true, default: TicketContentTypeEnum.Create },
         content: { type: String, trim: true },
         createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         resolvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

@@ -1,6 +1,8 @@
-const TicketTypeEnum = {
-  Ticket: 'Ticket',
-  Note: 'Note',
+const TicketContentTypeEnum = {
+  Create: 'Created by',
+  Note: 'Noted by',
+  Mention: 'Mentioned by',
+  Resolve: 'Resolved by',
 };
 const TicketStatusEnum = {
   Resolved: 'Resolved',
@@ -17,8 +19,9 @@ const TicketIssueTypeEnum = {
   Contact: 'Contact',
   Other: 'Other',
 };
+
 module.exports = {
-  TicketTypeEnum,
+  TicketContentTypeEnum,
   TicketStatusEnum,
   TicketIssueTypeEnum,
 };
