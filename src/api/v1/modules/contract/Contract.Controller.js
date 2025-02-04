@@ -12,13 +12,13 @@ class ContractController {
       let data = req.body;
       data.createdBy = req.token.sub;
       data.totalPaid = data.totalAmount;
-      data.totalNights = 150;
-      data.nightsCanUse = 150;
+      data.totalNights = 100;
+      data.nightsCanUse = 100;
       data.contractPaidStatus = ContractPaidStatusEnum.Done;
 
       if (data.membershipType === ContractMembershipTypeEnum.Dragon200) {
-        data.totalNights = 250;
-        data.nightsCanUse = 250;
+        data.totalNights = 200;
+        data.nightsCanUse = 200;
       }
       data.remainingNights = data.totalNights;
       data.usageNights = 0;

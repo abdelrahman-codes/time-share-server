@@ -7,8 +7,8 @@ const ContractPaidStatusEnum = {
   Done: 'Done',
 };
 const ContractMembershipTypeEnum = {
-  Dragon100: 'Dragon 150 Nights',
-  Dragon200: 'Dragon 250 Nights',
+  Dragon100: 'Dragon 100 Nights',
+  Dragon200: 'Dragon 200 Nights',
 };
 const installmentsTypeEnum = {
   Monthly: 'Monthly',
