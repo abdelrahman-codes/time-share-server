@@ -5,27 +5,27 @@ async function paginateAggregate(model, pipeline = [], options = {}) {
   const currentPage = Math.max(1, parseInt(page));
   const itemsPerPage = Math.max(1, parseInt(limit));
 
-  // Add sort stage to pipeline
+  // Clone pipeline to avoid modifying the original reference
+  const paginatedPipeline = [...pipeline];
+
+  // Add sort stage to the paginated pipeline
   if (sort) {
-    pipeline.push({ $sort: sort });
+    paginatedPipeline.push({ $sort: sort });
   }
 
-  // Add pagination stages to pipeline
-  const skipStage = { $skip: (currentPage - 1) * itemsPerPage };
-  const limitStage = { $limit: itemsPerPage };
-  pipeline.push(skipStage, limitStage);
+  // Add pagination stages
+  paginatedPipeline.push({ $skip: (currentPage - 1) * itemsPerPage }, { $limit: itemsPerPage });
 
-  // Count total documents using a cloned pipeline
-  const countPipeline = [...pipeline];
-  countPipeline.push({ $group: { _id: null, totalItems: { $sum: 1 } } });
+  // Create a separate count pipeline (without pagination)
+  const countPipeline = [...pipeline, { $count: "totalItems" }];
 
   // Execute both aggregation pipelines
   const [results, countResult] = await Promise.all([
-    model.aggregate(pipeline),
+    model.aggregate(paginatedPipeline),
     model.aggregate(countPipeline),
   ]);
 
-  // Extract totalItems
+  // Extract totalItems safely
   const totalItems = countResult.length > 0 ? countResult[0].totalItems : 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
