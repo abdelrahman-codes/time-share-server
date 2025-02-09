@@ -64,7 +64,8 @@ class LeadController {
   async getDetails(req, res, next) {
     try {
       let _id = req?.params?._id || req?.token?.sub;
-      const returnContract = true;
+      let returnContract = true;
+      if (!req?.params?._id) returnContract = false;
       const data = await LeadService.getDetails(_id, returnContract);
       return res.sendResponse(data);
     } catch (error) {
