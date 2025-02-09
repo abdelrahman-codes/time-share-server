@@ -1,6 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const ErrorHandler = require('../../../../enums/errors');
-const { TicketStatusEnum, TicketContentTypeEnum } = require('../../../../enums/ticket');
+const { TicketStatusEnum, TicketContentTypeEnum, TicketIssueTypeEnum } = require('../../../../enums/ticket');
 const LeadService = require('../lead/Lead.Service');
 const NotificationService = require('../notification/Notification.Service');
 const Ticket = require('./Ticket.entity');
@@ -139,6 +139,7 @@ class TicketService {
     const VillageService = require('../location/services/Village.Service');
     const village = await VillageService.getDetails(data.villageId);
     data.notes.content = `العميل عايز يحجز في قرية ${village.nameAr} في تاريخ ${data.date} لمدة ${data.totalDays} ايام`;
+    data.type = TicketIssueTypeEnum.Reservation;
     const ticket = new Ticket(data);
     await ticket.save();
     if (!ticket) {
