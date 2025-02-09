@@ -34,6 +34,14 @@ class VillageController {
       next(error);
     }
   }
+  async getMyVillages(req, res, next) {
+    try {
+      const data = await VillageService.getMyVillages(req.token.sub);
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new VillageController();

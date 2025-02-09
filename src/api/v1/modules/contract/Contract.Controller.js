@@ -66,6 +66,30 @@ class ContractController {
       next(error);
     }
   }
+  async getDetails(req, res, next) {
+    try {
+      const {
+        installmentsType,
+        contractPaidStatus,
+        contractDate,
+        membershipType,
+        individuals,
+        unitType,
+        startUsageWhenComplete,
+        canReserve,
+        totalNights,
+        usageNights,
+        remainingNights,
+        updatedAt,
+        city,
+        village,
+        ...result
+      } = await ContractService.getDetails(req.token.sub);
+      return res.sendResponse(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new ContractController();

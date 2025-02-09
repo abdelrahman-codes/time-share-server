@@ -72,5 +72,21 @@ class VillageService {
       },
     ]);
   }
+  async getMyVillages(_id) {
+    const list = [];
+    const ContractService = require('../../contract/Contract.Service');
+    const contract = await ContractService.getDetails(_id);
+    if (!contract)
+      throw ErrorHandler.badRequest({}, 'A contract is required. Please ensure that you have associated contract.');
+    list.push({ village: contract.village, city: contract.city });
+    const villages = await Village.find({ _id: { $ne: contract.village._id } }).populate('cityId');
+    villages.map((village) =>
+      list.push({
+        village: { _id: village._id, nameEn: village.nameEn, nameAr: village.nameAr },
+        city: { _id: village.cityId._id, nameEn: village.cityId.nameEn, nameAr: village.cityId.nameAr },
+      }),
+    );
+    return list;
+  }
 }
 module.exports = new VillageService();

@@ -98,6 +98,22 @@ class LeadController {
       next(error);
     }
   }
+  async homePage(req, res, next) {
+    try {
+      const data = await LeadService.homePage(req.token.sub);
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async deleteAccount(req, res, next) {
+    try {
+      const data = await LeadService.deleteAccount(req.token.sub);
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new LeadController();

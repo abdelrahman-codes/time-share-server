@@ -20,6 +20,13 @@ router.put(
   ValidationMiddleware(LeadDto.updateDto),
   LeadController.update,
 );
+router.put(
+  '/profile/data',
+  AuthMiddleware(Roles.Lead),
+  MulterS3Middleware('single', 'image', 'url'),
+  ValidationMiddleware(LeadDto.updateMyDateDto),
+  LeadController.update,
+);
 router.get(
   '/',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
@@ -46,5 +53,8 @@ router.patch(
   ValidationMiddleware(CommonDto._idDto),
   LeadController.resetPassword,
 );
+
+router.get('/main-data', AuthMiddleware(Roles.Lead), LeadController.homePage);
+router.delete('/', AuthMiddleware(Roles.Lead), LeadController.deleteAccount);
 
 module.exports = router;

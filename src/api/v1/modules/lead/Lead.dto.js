@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { email, isValidObjectId } = require('../../Common/validations/custom');
+const { email, isValidObjectId, password } = require('../../Common/validations/custom');
 const {
   NationalityEnum,
   ContactMethodEnum,
@@ -70,6 +70,27 @@ const updateDto = {
     .messages({ 'object.missing': 'At least one update field must be provided' }),
 };
 
+const updateMyDateDto = {
+  body: Joi.object()
+    .keys({
+      name: Joi.string().optional(),
+      mobile: Joi.string().optional(),
+      email: Joi.string().custom(email).optional(),
+      url: Joi.string().optional(),
+      password: Joi.string().optional().custom(password),
+      cPassword: Joi.alternatives().conditional('password', {
+        is: Joi.exist(),
+        then: Joi.string().valid(Joi.ref('password')).required().messages({
+          'any.only': 'The passwords you entered do not match. Please ensure both fields contain the same password.',
+          'any.required': 'Please confirm your password.',
+        }),
+        otherwise: Joi.forbidden(),
+      }),
+    })
+    .or('name', 'mobile', 'email', 'url', 'password')
+    .messages({ 'object.missing': 'At least one update field must be provided' }),
+};
+
 const get = {
   query: Joi.object().keys({
     page: Joi.number().optional(),
@@ -118,4 +139,5 @@ module.exports = {
   createDto,
   updateDto,
   get,
+  updateMyDateDto,
 };

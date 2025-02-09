@@ -1,4 +1,5 @@
 const path = require('path');
+const bcrypt = require('bcrypt');
 const logger = require('../../../../config/logger');
 const ErrorHandler = require('../../../../enums/errors');
 const Roles = require('../../../../enums/roles');
@@ -15,6 +16,7 @@ const { GenerateRandomString } = require('../../../../utils');
 const { PaginateHelper } = require('../../../../helpers');
 const { ValidationTypes } = require('../../../../enums/error-types');
 const ContractService = require('../contract/Contract.Service');
+const { ContractPaymentMethodEnum } = require('../../../../enums/contract');
 class LeadService {
   async create(data) {
     const user = await User.findOne({ mobile: data.mobile });
@@ -70,7 +72,9 @@ class LeadService {
         throw ErrorHandler.badRequest({ nationalId: ValidationTypes.AlreadyExists }, 'National id already exists');
       }
     }
-
+    if (data?.password) {
+      data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
+    }
     const updatedUser = await User.updateOne({ _id, role: Roles.Lead }, data);
     if (updatedUser.matchedCount === 0)
       throw ErrorHandler.dynamicError(
@@ -133,6 +137,30 @@ class LeadService {
       message: 'Password updated successfully',
       password: defaultPassword,
     };
+  }
+  async homePage(_id) {
+    const user = await this.getDetails(_id, true);
+    const data = {
+      _id: user._id,
+      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      url: user.url || null,
+      totalNights: user.contract.totalNights,
+      usageNights: user.contract.usageNights,
+      remainingNights: user.contract.remainingNights,
+      nightsCanUse: user.contract.nightsCanUse,
+    };
+    if (user.contract.paymentMethod === ContractPaymentMethodEnum.Installments) {
+      data.nextInstallments = user.contract.nextInstallments;
+      data.installmentAmount = user.contract.installmentAmount;
+    }
+    return data;
+  }
+  async deleteAccount(_id) {
+    const user = await User.findOneAndDelete({ _id, role: Roles.Lead });
+    if (!user) throw ErrorHandler.unauthorized();
+    return 'User deleted successfully';
   }
 }
 module.exports = new LeadService();
