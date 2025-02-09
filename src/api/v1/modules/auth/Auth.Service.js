@@ -32,12 +32,9 @@ class UserService {
       throw ErrorHandler.unauthorized({}, 'Invalid credentials');
     }
     const access_token = jwt.sign({ role: user.role, sub: user._id }, process.env.TOKEN_SECRET_KEY);
-    const { password, forgetPassword, emailVerified, createdAt, updatedAt, otp, ...result } = user.toObject();
-    const contract = await ContractService.getDetails(user._id);
+    // const { password, forgetPassword, emailVerified, createdAt, updatedAt, otp, ...result } = user.toObject();
     return {
       access_token,
-      user: result,
-      contract,
     };
   }
 }
