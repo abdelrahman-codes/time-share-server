@@ -35,4 +35,11 @@ router.post(
   ValidationMiddleware(TicketDto.assignDto),
   TicketController.assign,
 );
+
+router.post(
+  '/reservation',
+  AuthMiddleware(Roles.Lead),
+  ValidationMiddleware(TicketDto.createReservationTicketDto),
+  TicketController.createReservationRequest,
+);
 module.exports = router;

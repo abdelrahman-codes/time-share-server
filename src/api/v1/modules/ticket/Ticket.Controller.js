@@ -56,6 +56,22 @@ class TicketController {
       next(error);
     }
   }
+
+  async createReservationRequest(req, res, next) {
+    try {
+      req.body.createdBy = req.token.sub;
+      req.body.leadId = req.token.sub;
+      req.body.status = TicketStatusEnum.InProgress;
+      req.body.notes = {
+        createdBy: req.token.sub,
+      };
+      const data = await TicketService.createReservationRequest(req.body);
+      logger.info('New ticket created');
+      return res.sendResponse(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new TicketController();

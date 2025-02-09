@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { isValidObjectId } = require('../../Common/validations/custom');
+const { isValidObjectId, date } = require('../../Common/validations/custom');
 
 const { TicketIssueTypeEnum } = require('../../../../enums/ticket');
 const createTicketDto = {
@@ -32,8 +32,17 @@ const assignDto = {
     userId: Joi.string().custom(isValidObjectId).required(),
   }),
 };
+
+const createReservationTicketDto = {
+  body: Joi.object().keys({
+    villageId: Joi.string().custom(isValidObjectId).required(),
+    totalDays: Joi.number().required().min(5).max(10),
+    date: Joi.string().required().custom(date),
+  }),
+};
 module.exports = {
   createTicketDto,
   createNoteDto,
   assignDto,
+  createReservationTicketDto,
 };

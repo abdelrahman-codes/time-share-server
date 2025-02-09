@@ -134,5 +134,30 @@ class TicketService {
     await ticket.save();
     return 'Ticket assigned successfully';
   }
+
+  async createReservationRequest(data) {
+    const VillageService = require('../location/services/Village.Service');
+    const village = await VillageService.getDetails(data.villageId);
+    data.notes.content = `العميل عايز يحجز في قرية ${village.nameAr} في تاريخ ${data.date} لمدة ${data.totalDays} ايام`;
+    const ticket = new Ticket(data);
+    await ticket.save();
+    if (!ticket) {
+      throw ErrorHandler.badRequest({}, 'Ticket not created');
+    }
+    await LeadService.update(data.leadId, { ticketStatus: 'Pending' });
+
+    const notification = {
+      type: notificationTypeEnum.ReservationRequest,
+      message: `New reservation Request`,
+      refPage: `/leads/${ticket.leadId}`,
+      sender: ticket.leadId,
+      forAllAdmins: true,
+    };
+    await NotificationService.create(notification);
+
+    return {
+      ticketId: ticket._id,
+    };
+  }
 }
 module.exports = new TicketService();
