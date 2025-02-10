@@ -74,7 +74,7 @@ class VillageService {
   }
   async getMyVillages(_id) {
     const list = [];
-    const ContractService = require('../../contract/Contract.Service');
+    const ContractService = require('../../contract/services/Contract.Service');
     const contract = await ContractService.getDetails(_id);
     if (!contract)
       throw ErrorHandler.badRequest({}, 'A contract is required. Please ensure that you have associated contract.');

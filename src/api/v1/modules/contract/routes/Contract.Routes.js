@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const { ValidationMiddleware, AuthMiddleware } = require('../../../../middlewares');
-const ContractController = require('./Contract.Controller');
-const ContractDto = require('./Contract.dto');
-const Roles = require('../../../../enums/roles');
+const { ValidationMiddleware, AuthMiddleware } = require('../../../../../middlewares');
+const ContractController = require('../controllers/Contract.Controller');
+const ContractDto = require('../dto/Contract.dto');
+const Roles = require('../../../../../enums/roles');
 
 router.post(
   '/',

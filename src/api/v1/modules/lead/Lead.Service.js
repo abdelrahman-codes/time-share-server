@@ -15,7 +15,6 @@ const {
 const { GenerateRandomString } = require('../../../../utils');
 const { PaginateHelper } = require('../../../../helpers');
 const { ValidationTypes } = require('../../../../enums/error-types');
-const ContractService = require('../contract/Contract.Service');
 const { ContractPaymentMethodEnum } = require('../../../../enums/contract');
 class LeadService {
   async create(data) {
@@ -52,7 +51,7 @@ class LeadService {
     if (!user) throw ErrorHandler.notFound({}, 'User not found');
     const { password, forgetPassword, emailVerified, otp, ...result } = user.toObject();
     if (returnContract) {
-      const ContractService = require('../contract/Contract.Service');
+      const ContractService = require('../contract/services/Contract.Service');
       result.contract = await ContractService.getDetails(user._id);
     }
     return result;
@@ -96,7 +95,8 @@ class LeadService {
       throw ErrorHandler.badRequest({}, 'First Name Missing: Please provide a first name for this user to proceed.');
     if (!user.lastName)
       throw ErrorHandler.badRequest({}, 'Last Name Missing: Please provide a last name for this user to proceed.');
-
+    
+    const ContractService = require('../contract/services/Contract.Service');
     const hasContract = await ContractService.getDetails(_id);
     if (!hasContract)
       throw ErrorHandler.badRequest(

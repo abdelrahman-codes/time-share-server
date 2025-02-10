@@ -4,11 +4,11 @@ const contractSchema = mongoose.Schema(
   {
     paymentMethod: { type: String, trim: true },
     contractPaidStatus: { type: String, trim: true },
-
+    
     totalAmount: { type: Number },
     downPayment: { type: Number },
     totalInstallments: { type: Number },
-    installmentAmount: { type: Number },
+    // installmentAmount: { type: Number },
     remainingAmount: { type: Number },
     totalPaid: { type: Number },
 
@@ -16,14 +16,14 @@ const contractSchema = mongoose.Schema(
     numberOfInstallments: { type: Number },
     installmentStartIn: { type: Date },
     installmentEndsIn: { type: Date },
-    nextInstallments: { type: Date },
+    // nextInstallments: { type: Date },
     contractDate: { type: Date },
 
     membershipType: { type: String },
     individuals: { type: Number },
     unitType: { type: String },
     startUsageWhenComplete: { type: Number },
-    canReserve: { type: Boolean, default: true },
+    // canReserve: { type: Boolean, default: true },
 
     totalNights: { type: Number },
     usageNights: { type: Number },

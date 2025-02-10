@@ -4,7 +4,6 @@ const ErrorHandler = require('../../../../enums/errors');
 const User = require('../user/User.entity');
 const PermissionService = require('../permission/Permission.Service');
 const Roles = require('../../../../enums/roles');
-const ContractService = require('../contract/Contract.Service');
 class UserService {
   async dashboardLogin(data) {
     const user = await User.findOne({ username: data.username.toLowerCase(), role: { $ne: Roles.Lead } });

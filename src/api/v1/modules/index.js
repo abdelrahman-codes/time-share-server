@@ -10,7 +10,7 @@ const permissionRoutes = require('./permission/Permission.Routes');
 const leadRoutes = require('./lead/Lead.Routes');
 const ticketRoutes = require('./ticket/Ticket.Routes');
 const { CityRoutes, VillageRoutes } = require('./location/routes');
-const contractRoutes = require('./contract/Contract.Routes');
+const contractRoutes = require('./contract/routes/Contract.Routes');
 const notificationRoutes = require('./notification/Notification.Routes');
 
 router.use('/auth', authRoutes);

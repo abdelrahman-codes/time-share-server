@@ -1,10 +1,10 @@
 const Joi = require('joi');
-const { isValidObjectId, date } = require('../../Common/validations/custom');
+const { isValidObjectId, date } = require('../../../Common/validations/custom');
 const {
   ContractPaymentMethodEnum,
   ContractMembershipTypeEnum,
   installmentsTypeEnum,
-} = require('../../../../enums/contract');
+} = require('../../../../../enums/contract');
 const create = {
   body: Joi.object().keys({
     leadId: Joi.string().custom(isValidObjectId).required(),

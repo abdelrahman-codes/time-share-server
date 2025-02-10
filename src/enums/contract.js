@@ -14,5 +14,6 @@ const installmentsTypeEnum = {
   Monthly: 'Monthly',
   ThreeMonth: '3 Months',
   SixMonth: '6 Months',
+  AddManual: 'Add Manual',
 };
 module.exports = { ContractPaymentMethodEnum, ContractMembershipTypeEnum, installmentsTypeEnum, ContractPaidStatusEnum };
