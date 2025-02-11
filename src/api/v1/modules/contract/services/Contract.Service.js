@@ -17,17 +17,18 @@ class ContractService {
 
     const contract = new Contract(data);
     await contract.save();
-
-    data.contractInstallmentsList = data.contractInstallmentsList.map((ele, index) => {
-      return {
-        ...ele,
-        nextInstallment: index === 0 ? true : false,
-        order: index + 1,
-        contractId: contract._id,
-        leadId: data.leadId,
-      };
-    });
-    const contractInstallments = await ContractInstallment.insertMany(data.contractInstallmentsList);
+    if (data.paymentMethod === ContractPaymentMethodEnum.Installments) {
+      data.contractInstallmentsList = data.contractInstallmentsList.map((ele, index) => {
+        return {
+          ...ele,
+          nextInstallment: index === 0 ? true : false,
+          order: index + 1,
+          contractId: contract._id,
+          leadId: data.leadId,
+        };
+      });
+      await ContractInstallment.insertMany(data.contractInstallmentsList);
+    }
 
     return 'Contract created successfully';
   }

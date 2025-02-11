@@ -17,28 +17,68 @@ const create = {
       then: Joi.forbidden(),
       otherwise: Joi.number().min(1).required(),
     }),
+
     installmentsType: Joi.alternatives().conditional('paymentMethod', {
       is: ContractPaymentMethodEnum.Cash,
       then: Joi.forbidden(),
       otherwise: Joi.string()
-        .valid(installmentsTypeEnum.Monthly, installmentsTypeEnum.ThreeMonth, installmentsTypeEnum.SixMonth)
+        .valid(
+          installmentsTypeEnum.Monthly,
+          installmentsTypeEnum.ThreeMonth,
+          installmentsTypeEnum.SixMonth,
+          installmentsTypeEnum.AddManual,
+        )
         .required(),
     }),
-    numberOfInstallments: Joi.alternatives().conditional('paymentMethod', {
-      is: ContractPaymentMethodEnum.Cash,
-      then: Joi.forbidden(),
-      otherwise: Joi.number().min(1).required(),
-    }),
+
     startUsageWhenComplete: Joi.alternatives().conditional('paymentMethod', {
       is: ContractPaymentMethodEnum.Cash,
       then: Joi.forbidden(),
       otherwise: Joi.number().min(1).max(100).required(),
     }),
+
+    numberOfInstallments: Joi.alternatives().conditional('paymentMethod', {
+      is: ContractPaymentMethodEnum.Cash,
+      then: Joi.forbidden(),
+      otherwise: Joi.alternatives().conditional('installmentsType', {
+        is: Joi.valid(installmentsTypeEnum.Monthly, installmentsTypeEnum.ThreeMonth, installmentsTypeEnum.SixMonth),
+        then: Joi.number().min(1).required(),
+        otherwise: Joi.forbidden(),
+      }),
+    }),
+
+    contractInstallmentsList: Joi.alternatives().conditional('paymentMethod', {
+      is: ContractPaymentMethodEnum.Cash,
+      then: Joi.forbidden(),
+      otherwise: Joi.alternatives().conditional('installmentsType', {
+        is: installmentsTypeEnum.AddManual,
+        then: Joi.array()
+          .items(
+            Joi.object().keys({
+              installmentAmount: Joi.number().min(1).required(),
+              installmentDate: Joi.string().custom(date).required(),
+            }),
+          )
+          .min(1)
+          .required()
+          .unique()
+          .messages({
+            'array.min': 'There should be at least one installment',
+          }),
+        otherwise: Joi.forbidden(),
+      }),
+    }),
+
     installmentStartIn: Joi.alternatives().conditional('paymentMethod', {
       is: ContractPaymentMethodEnum.Cash,
       then: Joi.forbidden(),
-      otherwise: Joi.string().custom(date).required(),
+      otherwise: Joi.alternatives().conditional('installmentsType', {
+        is: Joi.valid(installmentsTypeEnum.Monthly, installmentsTypeEnum.ThreeMonth, installmentsTypeEnum.SixMonth),
+        then: Joi.string().custom(date).required(),
+        otherwise: Joi.forbidden(),
+      }),
     }),
+    
     villageId: Joi.string().custom(isValidObjectId).required(),
     membershipType: Joi.string()
       .valid(ContractMembershipTypeEnum.Dragon100, ContractMembershipTypeEnum.Dragon200)

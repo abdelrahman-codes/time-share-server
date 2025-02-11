@@ -37,8 +37,14 @@ class ContractController {
 
         if (data?.contractInstallmentsList) {
           let totalInstallments = 0;
-          data.contractInstallmentsList.forEach((ele) => {
-            totalInstallments += ele.installmentAmount;
+          data.contractInstallmentsList.forEach((ele, index) => {
+            if (index === 0) {
+              data.installmentStartIn = new Date(ele.installmentDate);
+            }
+            if (data.contractInstallmentsList.length - index === 1) {
+              data.installmentEndsIn = new Date(ele.installmentDate);
+            }
+            totalInstallments += Number(ele.installmentAmount);
           });
           if (totalInstallments !== data.remainingAmount)
             throw ErrorHandler.badRequest(
@@ -68,7 +74,7 @@ class ContractController {
 
           data.contractInstallmentsList = [];
           const installmentAmount = data.remainingAmount / data.numberOfInstallments;
-          
+
           for (let i = 0; i < data.numberOfInstallments; i++) {
             data.contractInstallmentsList.push({
               installmentAmount,
@@ -78,7 +84,7 @@ class ContractController {
 
             let nextDate = new Date(data.nextInstallment);
             nextDate.setMonth(nextDate.getMonth() + endsIn);
-          
+
             // Ensure all time properties remain consistent
             data.nextInstallment = new Date(
               nextDate.getFullYear(),
@@ -87,9 +93,8 @@ class ContractController {
               nextDate.getHours(),
               nextDate.getMinutes(),
               nextDate.getSeconds(),
-              nextDate.getMilliseconds()
+              nextDate.getMilliseconds(),
             );
-
           }
         }
       }
