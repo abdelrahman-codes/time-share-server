@@ -2,7 +2,7 @@ const ErrorHandler = require('../../../../../enums/errors');
 const Contract = require('../entities/Contract.entity');
 const ContractInstallment = require('../entities/ContractInstallment.entity');
 const { VillageService } = require('../../location/services');
-const { ContractPaymentMethodEnum } = require('../../../../../enums/contract');
+const { ContractPaymentMethodEnum, ContractPaidStatusEnum } = require('../../../../../enums/contract');
 
 class ContractService {
   async create(data) {
@@ -41,6 +41,11 @@ class ContractService {
       if (contractInstallment) {
         result.installmentAmount = contractInstallment.installmentAmount;
         result.nextInstallments = contractInstallment.installmentDate;
+        result.contractInstallment = {
+          _id: contractInstallment._id,
+          order: contractInstallment.order,
+          installmentAmount: contractInstallment.installmentAmount,
+        };
       }
     }
     if (result.cityId) {
@@ -53,6 +58,27 @@ class ContractService {
     }
 
     return result;
+  }
+
+  async payInstallment(_id) {
+    const currentInstallment = await ContractInstallment.findOne({ _id, nextInstallment: true });
+    if (!currentInstallment) throw ErrorHandler.notFound({}, 'Contract installation not found');
+    currentInstallment.nextInstallment = false;
+    currentInstallment.status =ContractPaidStatusEnum.Done;
+    await currentInstallment.save();
+
+    const nextInstallment = await ContractInstallment.findOneAndUpdate(
+      { order: currentInstallment.order + 1, leadId: currentInstallment.leadId, nextInstallment: false },
+      { nextInstallment: true },
+    );
+    const contract = await Contract.findOne({ _id: currentInstallment.contractId });
+    contract.totalPaid = Number(contract.totalPaid) + Number(currentInstallment.installmentAmount);
+    contract.remainingAmount = Number(contract.remainingAmount) - Number(currentInstallment.installmentAmount);
+    if (!nextInstallment) {
+      contract.contractPaidStatus = ContractPaidStatusEnum.Done;
+    }
+    await contract.save();
+    return 'Installment paid successfully';
   }
 }
 module.exports = new ContractService();
