@@ -55,22 +55,14 @@ class ContractController {
           //handle dates
           data.installmentStartIn = new Date(data.installmentStartIn);
           data.nextInstallment = new Date(data.installmentStartIn);
+         
           //handle ends in date
-          const installmentStart = new Date(data.installmentStartIn);
-          const installmentEnds = new Date(installmentStart);
           const endsIn =
             data.installmentsType === installmentsTypeEnum.Monthly
               ? 1
               : data.installmentsType === installmentsTypeEnum.ThreeMonth
                 ? 3
                 : 6;
-          installmentEnds.setMonth(installmentEnds.getMonth() + data.numberOfInstallments * endsIn);
-          installmentEnds.setFullYear(installmentEnds.getFullYear(), installmentEnds.getMonth(), installmentStart.getDate());
-          installmentEnds.setHours(installmentStart.getHours());
-          installmentEnds.setMinutes(installmentStart.getMinutes());
-          installmentEnds.setSeconds(installmentStart.getSeconds());
-          installmentEnds.setMilliseconds(installmentStart.getMilliseconds());
-          data.installmentEndsIn = installmentEnds;
 
           data.contractInstallmentsList = [];
           const installmentAmount = data.remainingAmount / data.numberOfInstallments;
@@ -81,6 +73,10 @@ class ContractController {
               installmentDate: new Date(data.nextInstallment),
               status: ContractPaidStatusEnum.Pending,
             });
+
+            if (data.numberOfInstallments - i === 1) {
+              data.installmentEndsIn = new Date(data.nextInstallment);
+            }
 
             let nextDate = new Date(data.nextInstallment);
             nextDate.setMonth(nextDate.getMonth() + endsIn);
