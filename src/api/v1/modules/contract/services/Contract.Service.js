@@ -64,7 +64,7 @@ class ContractService {
     const currentInstallment = await ContractInstallment.findOne({ _id, nextInstallment: true });
     if (!currentInstallment) throw ErrorHandler.notFound({}, 'Contract installation not found');
     currentInstallment.nextInstallment = false;
-    currentInstallment.status =ContractPaidStatusEnum.Done;
+    currentInstallment.status = ContractPaidStatusEnum.Done;
     await currentInstallment.save();
 
     const nextInstallment = await ContractInstallment.findOneAndUpdate(

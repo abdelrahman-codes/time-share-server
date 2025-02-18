@@ -9,6 +9,16 @@ class PaymentController {
       next(error);
     }
   }
+
+  async getAll(req, res, next) {
+    try {
+      let _id = req.params._id || req.token.sub;
+      const result = await PaymentService.getAll(_id);
+      return res.sendResponse(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new PaymentController();
