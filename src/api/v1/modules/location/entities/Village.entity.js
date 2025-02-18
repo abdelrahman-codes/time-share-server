@@ -6,6 +6,7 @@ const villageSchema = mongoose.Schema(
     nameEn: { type: String },
     normalizedNameAr: { type: String },
     normalizedNameEn: { type: String },
+    url: { type: String },
     cityId: { type: mongoose.Schema.Types.ObjectId, ref: 'City' },
   },
   {

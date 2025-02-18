@@ -19,7 +19,13 @@ class VillageService {
     }
     const village = new Village(data);
     await village.save();
-    return { _id: village._id, nameEn: village.nameEn, nameAr: village.nameAr, createdAt: village.createdAt };
+    return {
+      _id: village._id,
+      nameEn: village.nameEn,
+      nameAr: village.nameAr,
+      createdAt: village.createdAt,
+      url: village.url || null,
+    };
   }
   async update(data) {
     const village = await Village.findOne({ _id: data.villageId });
@@ -29,15 +35,16 @@ class VillageService {
 
     if (data?.nameAr) orCondition.push({ normalizedNameAr: data.nameAr.toLowerCase() });
     if (data?.nameEn) orCondition.push({ normalizedNameEn: data.nameEn.toLowerCase() });
-
-    const checkNameExists = await Village.findOne({ cityId: village.cityId, _id: { $ne: village._id }, $or: orCondition });
-    if (checkNameExists) {
-      let validationErrorObject = {};
-      if (checkNameExists.normalizedNameAr == data.nameAr.toLowerCase())
-        validationErrorObject.nameAr = ValidationTypes.AlreadyExists;
-      if (checkNameExists.normalizedNameEn == data.nameEn.toLowerCase())
-        validationErrorObject.nameEn = ValidationTypes.AlreadyExists;
-      throw ErrorHandler.badRequest(validationErrorObject);
+    if (orCondition.length) {
+      const checkNameExists = await Village.findOne({ cityId: village.cityId, _id: { $ne: village._id }, $or: orCondition });
+      if (checkNameExists) {
+        let validationErrorObject = {};
+        if (checkNameExists.normalizedNameAr == data.nameAr.toLowerCase())
+          validationErrorObject.nameAr = ValidationTypes.AlreadyExists;
+        if (checkNameExists.normalizedNameEn == data.nameEn.toLowerCase())
+          validationErrorObject.nameEn = ValidationTypes.AlreadyExists;
+        throw ErrorHandler.badRequest(validationErrorObject);
+      }
     }
 
     const updated = await Village.findOneAndUpdate({ _id: village._id }, data);
@@ -46,10 +53,10 @@ class VillageService {
     return 'Village updated successfully';
   }
   async getAll(cityId) {
-    return await Village.find({ cityId }).sort('-createdAt').select('nameAr nameEn createdAt updatedAt');
+    return await Village.find({ cityId }).sort('-createdAt').select('nameAr nameEn url createdAt updatedAt');
   }
   async getDetails(_id) {
-    const village = await Village.findOne({ _id }).select('nameAr nameEn cityId createdAt updatedAt');
+    const village = await Village.findOne({ _id }).select('nameAr nameEn url cityId createdAt updatedAt');
     if (!village) throw ErrorHandler.notFound({}, 'Village not found');
     return village;
   }
@@ -63,6 +70,7 @@ class VillageService {
           _id: 1,
           nameEn: 1,
           nameAr: 1,
+          url: 1,
           city: {
             _id: '$city._id',
             nameEn: '$city.nameEn',
@@ -82,7 +90,7 @@ class VillageService {
     const villages = await Village.find({ _id: { $ne: contract.village._id } }).populate('cityId');
     villages.map((village) =>
       list.push({
-        village: { _id: village._id, nameEn: village.nameEn, nameAr: village.nameAr },
+        village: { _id: village._id, nameEn: village.nameEn, nameAr: village.nameAr, url: village.url || null },
         city: { _id: village.cityId._id, nameEn: village.cityId.nameEn, nameAr: village.cityId.nameAr },
       }),
     );

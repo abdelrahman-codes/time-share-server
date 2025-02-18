@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { ValidationMiddleware, AuthMiddleware } = require('../../../../../middlewares');
+const { ValidationMiddleware, AuthMiddleware, MulterS3Middleware } = require('../../../../../middlewares');
 const { VillageController } = require('../controllers');
 const { VillageDto } = require('../dto');
 const CommonDto = require('../../../Common/validations/Validation');
@@ -9,12 +9,14 @@ const Roles = require('../../../../../enums/roles');
 router.post(
   '/',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor]),
+  MulterS3Middleware('single', 'image', 'url'),
   ValidationMiddleware(VillageDto.create),
   VillageController.create,
 );
 router.put(
   '/:_id',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.Member, Roles.SuperVisor]),
+  MulterS3Middleware('single', 'image', 'url'),
   ValidationMiddleware(VillageDto.update),
   VillageController.update,
 );

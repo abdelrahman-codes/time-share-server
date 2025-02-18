@@ -33,7 +33,7 @@ class ContractService {
     return 'Contract created successfully';
   }
   async getDetails(_id) {
-    const contract = await Contract.findOne({ leadId: _id }).populate('cityId villageId', 'nameEn nameAr');
+    const contract = await Contract.findOne({ leadId: _id }).populate('cityId villageId', 'nameEn nameAr url');
     if (!contract) return null;
     const { createdBy, createdAt, leadId, numberOfInstallments, ...result } = contract.toObject();
     if (contract.paymentMethod === ContractPaymentMethodEnum.Installments) {
@@ -54,6 +54,7 @@ class ContractService {
     }
     if (result.villageId) {
       result.village = result.villageId;
+      if (!result.villageId?.url) result.village.url = null;
       delete result.villageId;
     }
 
