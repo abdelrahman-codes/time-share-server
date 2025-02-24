@@ -115,6 +115,15 @@ class LeadController {
       next(error);
     }
   }
+  async updateFcmToken(req, res, next) {
+    try {
+      let _id = req.token.sub;
+      await LeadService.update(_id, req.body);
+      return res.sendResponse('Fsm Token updated successfully');
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new LeadController();

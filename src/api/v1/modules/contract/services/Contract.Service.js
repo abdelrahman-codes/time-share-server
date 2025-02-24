@@ -62,6 +62,7 @@ class ContractService {
   }
 
   async payInstallment(_id) {
+    let status = ContractPaidStatusEnum.Pending;
     const currentInstallment = await ContractInstallment.findOne({ _id, nextInstallment: true });
     if (!currentInstallment) throw ErrorHandler.notFound({}, 'Contract installation not found');
     currentInstallment.nextInstallment = false;
@@ -77,9 +78,10 @@ class ContractService {
     contract.remainingAmount = Number(contract.remainingAmount) - Number(currentInstallment.installmentAmount);
     if (!nextInstallment) {
       contract.contractPaidStatus = ContractPaidStatusEnum.Done;
+      status = ContractPaidStatusEnum.Done;
     }
     await contract.save();
-    return 'Installment paid successfully';
+    return status;
   }
 }
 module.exports = new ContractService();

@@ -26,6 +26,7 @@ const userSchema = mongoose.Schema(
     role: { type: String, default: Roles.Lead },
     active: { type: Boolean, default: true },
     newNotification: { type: Boolean, default: false },
+    fcmToken: { type: String, trim: true },
   },
   {
     timestamps: true,

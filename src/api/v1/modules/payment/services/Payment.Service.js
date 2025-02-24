@@ -1,8 +1,11 @@
 const ErrorHandler = require('../../../../../enums/errors');
 const { PaymentStatusEnum, PaymentPayMethodEnum } = require('../../../../../enums/payment');
 const ContractInstallment = require('../../contract/entities/ContractInstallment.entity');
+const Contract = require('../../contract/entities/Contract.entity');
 const Payment = require('../entities/Payment.entity');
-
+const Reservation = require('../../reservation/Reservation.entity');
+const { ReservationStatusEnum } = require('../../../../../enums/reservation');
+const { ContractPaidStatusEnum } = require('../../../../../enums/contract');
 class PaymentService {
   async create(data) {
     const LeadService = require('../../lead/Lead.Service');
@@ -28,8 +31,26 @@ class PaymentService {
     await payment.save();
     if (!payment) throw ErrorHandler.badRequest({}, 'Payment not created');
 
-    await ContractService.payInstallment(contract.contractInstallment._id);
+    const status = await ContractService.payInstallment(contract.contractInstallment._id);
 
+    let usage = Math.floor((Number(payment.amount) / Number(contract.totalAmount)) * Number(contract.totalNights));
+    let nightsCanUse = Number(contract.nightsCanUse) + Number(usage);
+    if (status === ContractPaidStatusEnum.Done) {
+      nightsCanUse = contract.remainingNights;
+      usage = Number(contract.remainingNights) - Number(contract.nightsCanUse);
+    }
+    const reservation = new Reservation({
+      reservationDate: payment.createdAt,
+      usage: `+${usage}`,
+      usageNumber: usage,
+      status: ReservationStatusEnum.Done,
+      canEdit: false,
+      contractId: payment.contractId,
+      leadId: payment.leadId,
+      createdBy: payment.createdBy,
+    });
+    await reservation.save();
+    await Contract.findOneAndUpdate({ _id: contract._id }, { nightsCanUse });
     return 'Payment created successfully';
   }
   async getAll(leadId) {

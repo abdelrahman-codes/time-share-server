@@ -1,20 +1,14 @@
 require('dotenv').config();
 const http = require('http');
 const app = require('./src/app');
-const setupSocketIo = require('./src/socket');
 
 const port = process.env.PORT || 8080;
 
 const startServer = () => {
   const server = http.createServer(app);
-
-  // Initialize Socket.IO
-  const io = setupSocketIo(server, app);
-
   server.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
   });
-
   // Handle server errors to restart gracefully
   server.on('error', (error) => {
     console.error('Server encountered an error:', error);

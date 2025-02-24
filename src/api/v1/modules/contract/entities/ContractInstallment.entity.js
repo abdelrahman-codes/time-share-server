@@ -7,6 +7,9 @@ const contractInstallmentSchema = mongoose.Schema(
     nextInstallment: { type: Boolean, default: false },
     installmentDate: { type: Date },
     installmentAmount: { type: Number },
+    isNotifiedFiveDays: { type: Boolean, default: false },
+    isNotifiedOneDay: { type: Boolean, default: false },
+    isNotifiedSameDay: { type: Boolean, default: false },
 
     contractId: { type: mongoose.Schema.Types.ObjectId, ref: 'Contract' },
     leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

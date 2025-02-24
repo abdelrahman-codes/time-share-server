@@ -9,9 +9,11 @@ const V1Routes = require('./api/v1/modules/index');
 const { ErrorMiddleware, LimiterMiddleware, ResponseMiddleware, NormalizeTextMiddleware } = require('./middlewares/index');
 const ErrorHandler = require('./enums/errors');
 const logger = require('./config/logger');
-
+const { Scheduler } = require('./config/scheduler');
 // Database connection
 connection();
+
+Scheduler();
 
 const app = express();
 

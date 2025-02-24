@@ -57,5 +57,10 @@ router.patch(
 router.get('/main-data', AuthMiddleware(Roles.Lead), LeadController.homePage);
 router.get('/profile/data', AuthMiddleware(Roles.Lead), LeadController.getDetails);
 router.delete('/', AuthMiddleware(Roles.Lead), LeadController.deleteAccount);
-
+router.patch(
+  '/tokens/fcm-token',
+  AuthMiddleware([Roles.Lead]),
+  ValidationMiddleware(LeadDto.updateFcmTokenDto),
+  LeadController.updateFcmToken,
+);
 module.exports = router;

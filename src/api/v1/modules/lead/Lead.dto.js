@@ -135,9 +135,16 @@ const get = {
   }),
 };
 
+const updateFcmTokenDto = {
+  body: Joi.object().keys({
+    fcmToken: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createDto,
   updateDto,
   get,
   updateMyDateDto,
+  updateFcmTokenDto,
 };

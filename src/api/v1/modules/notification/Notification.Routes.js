@@ -9,6 +9,7 @@ router.get(
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
   NotificationController.getAll,
 );
+router.get('/mobile', AuthMiddleware([Roles.Lead]), NotificationController.getAll);
 router.patch(
   '/mark-as-read/:_id',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member, Roles.Lead]),
