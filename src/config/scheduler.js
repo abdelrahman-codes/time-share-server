@@ -2,23 +2,23 @@ const cron = require('node-cron');
 const { sendToMultipleUsers } = require('./push-notification');
 const ContractInstallment = require('../api/v1/modules/contract/entities/ContractInstallment.entity');
 const Notification = require('../api/v1/modules/notification/Notification.entity');
-const { notificationTypeEnum } = require('../enums/notification');
+const { notificationTypeEnum, notificationMediumEnum } = require('../enums/notification');
 function Scheduler() {
   try {
     // 0 0 * * *
-    cron.schedule('0 0 * * *', async () => {
+    cron.schedule('0 * * * *', async () => {
       const notifications = [],
         pushNotifications = [];
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      // today.setHours(0, 0, 0, 0);
 
       const oneDayLater = new Date();
       oneDayLater.setDate(today.getDate() + 1);
-      oneDayLater.setHours(0, 0, 0, 0);
+      // oneDayLater.setHours(0, 0, 0, 0);
 
       const fiveDaysLater = new Date();
       fiveDaysLater.setDate(today.getDate() + 5);
-      fiveDaysLater.setHours(0, 0, 0, 0);
+      // fiveDaysLater.setHours(0, 0, 0, 0);
 
       const installmentsTodayIds = [],
         installmentsOneDayLaterIds = [],
@@ -29,28 +29,28 @@ function Scheduler() {
           isNotifiedFiveDays: true,
           isNotifiedOneDay: true,
           isNotifiedSameDay: false,
-          installmentDate: { $eq: today }, // Exact match
+          installmentDate: { $lte: today }, // Exact match
         }).populate('leadId', 'fcmToken'),
 
         ContractInstallment.find({
           nextInstallment: true,
           isNotifiedFiveDays: true,
           isNotifiedOneDay: false,
-          installmentDate: { $eq: oneDayLater }, // Exact match
+          installmentDate: { $lte: oneDayLater }, // Exact match
         }).populate('leadId', 'fcmToken'),
 
         ContractInstallment.find({
           nextInstallment: true,
           isNotifiedFiveDays: false,
-          installmentDate: { $eq: fiveDaysLater }, // Exact match
+          installmentDate: { $lte: fiveDaysLater }, // Exact match
         }).populate('leadId', 'fcmToken'),
       ]);
-
-      installmentsToday.forEach((ele) => {
+      installmentsToday.map((ele) => {
         notifications.push({
           type: notificationTypeEnum.InstallmentReminder,
           message: `Reminder: Your installment is due today! 🚀 Pay online via the app or contact customer service.`,
           receivers: ele.leadId._id,
+          notificationMedium:notificationMediumEnum.Mobile
         });
         installmentsTodayIds.push(ele._id);
         if (ele?.leadId.fcmToken) {
@@ -63,11 +63,12 @@ function Scheduler() {
       });
 
       // Process Installments Due in 1 Day
-      installmentsOneDayLater.forEach((ele) => {
+      installmentsOneDayLater.map((ele) => {
         notifications.push({
           type: notificationTypeEnum.InstallmentReminder,
           message: `Reminder: Your installment is due in 1 day! ⏳ Pay online via the app or contact customer service.`,
           receivers: ele.leadId._id,
+          notificationMedium:notificationMediumEnum.Mobile
         });
         installmentsOneDayLaterIds.push(ele._id);
         if (ele?.leadId.fcmToken) {
@@ -80,11 +81,12 @@ function Scheduler() {
       });
 
       // Process Installments Due in 5 Days
-      installmentsFiveDaysLater.forEach((ele) => {
+      installmentsFiveDaysLater.map((ele) => {
         notifications.push({
           type: notificationTypeEnum.InstallmentReminder,
           message: `Heads up! Your installment is due in 5 days. 🎯 Pay online via the app or contact support.`,
           receivers: ele.leadId._id,
+          notificationMedium:notificationMediumEnum.Mobile
         });
         installmentsFiveDaysLaterIds.push(ele._id);
         if (ele?.leadId.fcmToken) {
@@ -95,7 +97,6 @@ function Scheduler() {
           });
         }
       });
-
       if (notifications.length) {
         await Notification.insertMany(notifications);
       }
