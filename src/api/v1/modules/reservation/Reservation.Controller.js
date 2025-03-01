@@ -2,7 +2,8 @@ const ReservationService = require('./Reservation.Service');
 class ReservationController {
   async getAll(req, res, next) {
     try {
-      const data = await ReservationService.getAll(req.params._id);
+      const _id = req.params._id || req.token.sub;
+      const data = await ReservationService.getAll(_id);
       return res.sendResponse(data);
     } catch (error) {
       next(error);

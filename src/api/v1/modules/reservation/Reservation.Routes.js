@@ -11,6 +11,7 @@ router.get(
   ValidationMiddleware(CommonDto._idDto),
   ReservationController.getAll,
 );
+router.get('/', AuthMiddleware([Roles.Lead]), ReservationController.getAll);
 router.post(
   '/',
   AuthMiddleware([Roles.Owner, Roles.Admin, Roles.SuperVisor, Roles.Member]),
