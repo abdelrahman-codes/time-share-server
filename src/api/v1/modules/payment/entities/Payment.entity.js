@@ -10,7 +10,8 @@ const paymentSchema = mongoose.Schema(
     canEdit: { type: Boolean, default: false },
     status: { type: String, trim: true, default: PaymentStatusEnum.Pending },
     url: { type: String, trim: true, default: null },
-
+    paymentToken: { type: String },
+    
     contractId: { type: mongoose.Schema.Types.ObjectId, ref: 'Contract' },
     contractInstallmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'ContractInstallment' },
     leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

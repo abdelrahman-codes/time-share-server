@@ -20,5 +20,7 @@ router.get(
   PaymentController.getAll,
 );
 router.get('/logs', AuthMiddleware([Roles.Lead]), PaymentController.getAll);
+router.post('/create-payment-token', AuthMiddleware([Roles.Lead]), PaymentController.createPaymentToken);
+router.get('/response', PaymentController.transactionResponse);
 
 module.exports = router;
