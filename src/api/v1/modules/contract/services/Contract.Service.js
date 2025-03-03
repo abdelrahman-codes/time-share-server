@@ -45,6 +45,7 @@ class ContractService {
           _id: contractInstallment._id,
           order: contractInstallment.order,
           installmentAmount: contractInstallment.installmentAmount,
+          installmentDate: contractInstallment.installmentDate,
         };
       }
     }

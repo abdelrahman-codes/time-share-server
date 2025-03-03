@@ -32,6 +32,7 @@ module.exports = (allowedRoles, feature, accessLevel) => {
         name: user.name,
         username: user.username,
         role: user.role,
+        fcmToken: user.fcmToken || null,
       };
       return next();
     });

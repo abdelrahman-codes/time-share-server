@@ -4,13 +4,17 @@ const ContractInstallment = require('../../contract/entities/ContractInstallment
 const Contract = require('../../contract/entities/Contract.entity');
 const Payment = require('../entities/Payment.entity');
 const Reservation = require('../../reservation/Reservation.entity');
+const Notification = require('../../notification/Notification.entity');
 const { ReservationStatusEnum } = require('../../../../../enums/reservation');
 const { ContractPaidStatusEnum } = require('../../../../../enums/contract');
 const crypto = require('crypto');
+const { sendToOneUser } = require('../../../../../config/push-notification');
+const { notificationTypeEnum, notificationMediumEnum } = require('../../../../../enums/notification');
+
 class PaymentService {
   async create(data) {
     const LeadService = require('../../lead/Lead.Service');
-    await LeadService.getDetails(data.leadId);
+    const lead = await LeadService.getDetails(data.leadId);
 
     const ContractService = require('../../contract/services/Contract.Service');
     const contract = await ContractService.getDetails(data.leadId);
@@ -52,6 +56,20 @@ class PaymentService {
     });
     await reservation.save();
     await Contract.findOneAndUpdate({ _id: contract._id }, { nightsCanUse });
+    const date = new Date(contract.contractInstallment.installmentDate).toISOString().substring(0, 10);
+    await Notification.create({
+      type: notificationTypeEnum.PaymentConfirmation,
+      message: `Your installment #${contract.contractInstallment.order}, due on ${date}, has been successfully paid.`,
+      receivers: lead._id,
+      notificationMedium: notificationMediumEnum.Mobile,
+    });
+    if (lead?.fcmToken) {
+      sendToOneUser(
+        lead.fcmToken,
+        notificationTypeEnum.PaymentConfirmation,
+        `Your installment #${contract.contractInstallment.order}, due on ${date}, has been successfully paid.`,
+      );
+    }
     return 'Payment created successfully';
   }
   async getAll(leadId) {
