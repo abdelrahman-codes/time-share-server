@@ -49,8 +49,9 @@ function Scheduler() {
         notifications.push({
           type: notificationTypeEnum.InstallmentReminder,
           message: `Reminder: Your installment is due today! 🚀 Pay online via the app or contact customer service.`,
+          message_ar: 'تذكير: قسطك مستحق اليوم! 🚀 ادفع عبر التطبيق أو تواصل مع خدمة العملاء.',
           receivers: ele.leadId._id,
-          notificationMedium:notificationMediumEnum.Mobile
+          notificationMedium: notificationMediumEnum.Mobile,
         });
         installmentsTodayIds.push(ele._id);
         if (ele?.leadId.fcmToken) {
@@ -67,8 +68,9 @@ function Scheduler() {
         notifications.push({
           type: notificationTypeEnum.InstallmentReminder,
           message: `Reminder: Your installment is due in 1 day! ⏳ Pay online via the app or contact customer service.`,
+          message_ar: 'تذكير: قسطك مستحق خلال يوم واحد! ⏳ ادفع عبر التطبيق أو تواصل مع خدمة العملاء.',
           receivers: ele.leadId._id,
-          notificationMedium:notificationMediumEnum.Mobile
+          notificationMedium: notificationMediumEnum.Mobile,
         });
         installmentsOneDayLaterIds.push(ele._id);
         if (ele?.leadId.fcmToken) {
@@ -85,8 +87,9 @@ function Scheduler() {
         notifications.push({
           type: notificationTypeEnum.InstallmentReminder,
           message: `Heads up! Your installment is due in 5 days. 🎯 Pay online via the app or contact support.`,
+          message_ar: 'انتبه! قسطك مستحق خلال 5 أيام. 🎯 ادفع عبر التطبيق أو تواصل مع الدعم.',
           receivers: ele.leadId._id,
-          notificationMedium:notificationMediumEnum.Mobile
+          notificationMedium: notificationMediumEnum.Mobile,
         });
         installmentsFiveDaysLaterIds.push(ele._id);
         if (ele?.leadId.fcmToken) {

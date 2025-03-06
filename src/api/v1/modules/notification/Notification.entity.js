@@ -4,6 +4,7 @@ const NotificationSchema = mongoose.Schema(
   {
     type: { type: String, required: true },
     message: { type: String, required: true },
+    message_ar: { type: String },
     notificationMedium: {
       type: String,
       enum: [notificationMediumEnum.Both, notificationMediumEnum.Web, notificationMediumEnum.Mobile],
@@ -20,7 +21,6 @@ const NotificationSchema = mongoose.Schema(
     timestamps: true,
   },
 );
-
 
 const Notification = mongoose.models.Notification || mongoose.model('Notification', NotificationSchema);
 module.exports = Notification;

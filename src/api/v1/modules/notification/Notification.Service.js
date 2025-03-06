@@ -56,6 +56,7 @@ class NotificationService {
         $project: {
           type: 1,
           message: 1,
+          message_ar:1,
           isRead: 1,
           refPage: 1,
           createdAt: 1,

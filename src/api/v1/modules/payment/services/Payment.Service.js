@@ -60,6 +60,7 @@ class PaymentService {
     await Notification.create({
       type: notificationTypeEnum.PaymentConfirmation,
       message: `Your installment #${contract.contractInstallment.order}, due on ${date}, has been successfully paid.`,
+      message_ar: `تم دفع القسط رقم ${contract.contractInstallment.order} المستحق في ${date} بنجاح`,
       receivers: lead._id,
       notificationMedium: notificationMediumEnum.Mobile,
     });

@@ -7,7 +7,7 @@ const notificationTypeEnum = {
   ReservationRequest: 'Reservation Request',
   Payment: 'Payment',
   AssignedTicket: 'Assigned Ticket',
-  InstallmentReminder: 'Installment Reminder',
+  InstallmentReminder: 'Reminder',
   PaymentConfirmation: 'Payment Confirmation',
 };
 module.exports = { notificationMediumEnum, notificationTypeEnum };
