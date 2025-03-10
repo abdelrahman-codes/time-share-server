@@ -53,7 +53,11 @@ class DashboardService {
       { $unwind: '$leadDetails' },
       {
         $project: {
-          name: '$leadDetails.name',
+          lead: {
+            _id: '$leadDetails._id',
+            name: '$leadDetails.name',
+            url: '$leadDetails.url',
+          },
           date: '$reservationDate',
           location: 1,
         },
@@ -75,7 +79,11 @@ class DashboardService {
       { $unwind: '$leadDetails' },
       {
         $project: {
-          name: '$leadDetails.name',
+          lead: {
+            _id: '$leadDetails._id',
+            name: '$leadDetails.name',
+            url: '$leadDetails.url',
+          },
           date: '$installmentDate',
           installmentAmount: 1,
         },
