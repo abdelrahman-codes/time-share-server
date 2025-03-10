@@ -1,0 +1,93 @@
+const { date } = require('joi');
+const { PaymentStatusEnum } = require('../../../../enums/payment');
+const { ReservationStatusEnum } = require('../../../../enums/reservation');
+const { ContractPaymentMethodEnum } = require('../../../../enums/contract');
+const Contract = require('../contract/entities/Contract.entity');
+const ContractInstallment = require('../contract/entities/ContractInstallment.entity');
+const Payment = require('../payment/entities/Payment.entity');
+const Reservation = require('../reservation/Reservation.entity');
+class DashboardService {
+  async getDetails(days) {
+    let query = {},
+      paymentQuery = { status: PaymentStatusEnum.Paid },
+      reservationQuery = { status: ReservationStatusEnum.Done },
+      contractInstallmentQuery = { nextInstallment: true };
+
+    if (days) {
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - Number(days));
+      query = { createdAt: { $gte: startDate } };
+      paymentQuery.createdAt = { $gte: startDate };
+      reservationQuery.reservationDate = { $gte: startDate };
+      contractInstallmentQuery.installmentDate = { $gte: startDate };
+    }
+
+    const totalContract = await Contract.countDocuments(query);
+    const contracts = await Contract.find(query, { totalAmount: 1 });
+    const cashContracts = await Contract.find(
+      { paymentMethod: ContractPaymentMethodEnum.Cash, ...query },
+      { totalAmount: 1 },
+    );
+    const totalCashContractAmount = cashContracts.reduce((sum, contract) => sum + contract.totalAmount, 0);
+    const totalContractAmount = contracts.reduce((sum, contract) => sum + contract.totalAmount, 0) + totalCashContractAmount; // Sum all contract amounts
+
+    const payments = await Payment.find(paymentQuery, { amount: 1 });
+    const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0) + totalCashContractAmount;
+
+    const totalRemainingAmount = totalContractAmount - totalPaid;
+
+    const reservationLogs = await Reservation.aggregate([
+      { $match: reservationQuery },
+      { $sort: { reservationDate: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'leadId',
+          foreignField: '_id',
+          as: 'leadDetails',
+        },
+      },
+      { $unwind: '$leadDetails' },
+      {
+        $project: {
+          name: '$leadDetails.name',
+          date: '$reservationDate',
+          location: 1,
+        },
+      },
+    ]);
+
+    const installmentLogs = await ContractInstallment.aggregate([
+      { $match: contractInstallmentQuery },
+      { $sort: { installmentDate: 1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'leadId',
+          foreignField: '_id',
+          as: 'leadDetails',
+        },
+      },
+      { $unwind: '$leadDetails' },
+      {
+        $project: {
+          name: '$leadDetails.name',
+          date: '$installmentDate',
+          installmentAmount: 1,
+        },
+      },
+    ]);
+
+    return {
+      totalContract,
+      totalContractAmount,
+      totalPaid,
+      totalRemainingAmount,
+      reservationLogs,
+      installmentLogs,
+    };
+  }
+}
+module.exports = new DashboardService();

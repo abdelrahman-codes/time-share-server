@@ -14,6 +14,7 @@ const contractRoutes = require('./contract/routes/Contract.Routes');
 const notificationRoutes = require('./notification/Notification.Routes');
 const paymentRoutes = require('./payment/routes/Payment.Routes');
 const reservationRoutes = require('./reservation/Reservation.Routes');
+const dashboardRoutes = require('./dashboard/Dashboard.Routes');
 
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
@@ -26,5 +27,6 @@ router.use('/contract', contractRoutes);
 router.use('/notification', notificationRoutes);
 router.use('/payment', paymentRoutes);
 router.use('/reservation', reservationRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 module.exports = router;
