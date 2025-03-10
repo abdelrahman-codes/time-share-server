@@ -12,7 +12,6 @@ class DashboardService {
       paymentQuery = { status: PaymentStatusEnum.Paid },
       reservationQuery = { status: ReservationStatusEnum.Done },
       contractInstallmentQuery = { nextInstallment: true };
-
     if (days) {
       const today = new Date();
       today.setHours(23, 59, 59, 999);
