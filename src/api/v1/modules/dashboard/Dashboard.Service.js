@@ -14,12 +14,14 @@ class DashboardService {
       contractInstallmentQuery = { nextInstallment: true };
 
     if (days) {
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - Number(days));
-      query = { createdAt: { $gte: startDate } };
-      paymentQuery.createdAt = { $gte: startDate };
-      reservationQuery.reservationDate = { $gte: startDate };
-      contractInstallmentQuery.installmentDate = { $gte: startDate };
+      query = { createdAt: { $gte: startDate, $lte: today } };
+      paymentQuery.createdAt = { $gte: startDate, $lte: today };
+      reservationQuery.reservationDate = { $gte: startDate, $lte: today };
+      contractInstallmentQuery.installmentDate = { $gte: startDate, $lte: today };
     }
 
     const totalContract = await Contract.countDocuments(query);
@@ -34,7 +36,7 @@ class DashboardService {
     const payments = await Payment.find(paymentQuery, { amount: 1 });
     const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0) + totalCashContractAmount;
 
-    const totalRemainingAmount = totalContractAmount - totalPaid;
+    const totalRemainingAmount = Math.max(0, totalContractAmount - totalPaid);
 
     const reservationLogs = await Reservation.aggregate([
       { $match: reservationQuery },
