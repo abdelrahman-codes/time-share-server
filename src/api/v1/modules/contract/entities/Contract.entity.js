@@ -4,7 +4,8 @@ const contractSchema = mongoose.Schema(
   {
     paymentMethod: { type: String, trim: true },
     contractPaidStatus: { type: String, trim: true },
-    
+    isCustomPackage: { type: Boolean, default: false},
+
     totalAmount: { type: Number },
     downPayment: { type: Number },
     totalInstallments: { type: Number },

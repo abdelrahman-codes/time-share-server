@@ -16,4 +16,16 @@ const installmentsTypeEnum = {
   SixMonth: '6 Months',
   AddManual: 'Add Manual',
 };
-module.exports = { ContractPaymentMethodEnum, ContractMembershipTypeEnum, installmentsTypeEnum, ContractPaidStatusEnum };
+
+const PackageTypeEnum = {
+  Platinum: 'Platinum',
+  Diamond: 'Diamond',
+  Golden: 'Golden',
+};
+module.exports = {
+  ContractPaymentMethodEnum,
+  ContractMembershipTypeEnum,
+  installmentsTypeEnum,
+  ContractPaidStatusEnum,
+  PackageTypeEnum,
+};

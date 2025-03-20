@@ -11,5 +11,9 @@ router.post(
   ContractController.create,
 );
 router.get('/', AuthMiddleware(Roles.Lead), ContractController.getDetails);
-
+router.post(
+  '/custom-package',
+  ValidationMiddleware(ContractDto.createCustomPackage),
+  ContractController.createCustomPackage,
+);
 module.exports = router;

@@ -1,9 +1,10 @@
 const Joi = require('joi');
-const { isValidObjectId, date } = require('../../../Common/validations/custom');
+const { isValidObjectId, date, email } = require('../../../Common/validations/custom');
 const {
   ContractPaymentMethodEnum,
   ContractMembershipTypeEnum,
   installmentsTypeEnum,
+  PackageTypeEnum,
 } = require('../../../../../enums/contract');
 const create = {
   body: Joi.object().keys({
@@ -78,7 +79,7 @@ const create = {
         otherwise: Joi.forbidden(),
       }),
     }),
-    
+
     villageId: Joi.string().custom(isValidObjectId).required(),
     membershipType: Joi.string()
       .valid(ContractMembershipTypeEnum.Dragon100, ContractMembershipTypeEnum.Dragon200)
@@ -88,6 +89,19 @@ const create = {
     contractDate: Joi.string().custom(date).required(),
   }),
 };
+
+const createCustomPackage = {
+  body: Joi.object().keys({
+    packageType: Joi.string().required().valid(PackageTypeEnum.Platinum, PackageTypeEnum.Golden, PackageTypeEnum.Diamond),
+    paymentMethod: Joi.string().valid(ContractPaymentMethodEnum.Cash, ContractPaymentMethodEnum.Installments).required(),
+    name: Joi.string().required(),
+    mobile: Joi.string().required(),
+    email: Joi.string().optional().custom(email),
+    nationality: Joi.string().optional(),
+    nationalId: Joi.number().optional(),
+  }),
+};
 module.exports = {
   create,
+  createCustomPackage,
 };

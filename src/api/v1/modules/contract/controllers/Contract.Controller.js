@@ -55,7 +55,7 @@ class ContractController {
           //handle dates
           data.installmentStartIn = new Date(data.installmentStartIn);
           data.nextInstallment = new Date(data.installmentStartIn);
-         
+
           //handle ends in date
           const endsIn =
             data.installmentsType === installmentsTypeEnum.Monthly
@@ -120,6 +120,14 @@ class ContractController {
         village,
         ...result
       } = await ContractService.getDetails(req.token.sub);
+      return res.sendResponse(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async createCustomPackage(req, res, next) {
+    try {
+      const result = await ContractService.createCustomPackage(req.body);
       return res.sendResponse(result);
     } catch (error) {
       next(error);
