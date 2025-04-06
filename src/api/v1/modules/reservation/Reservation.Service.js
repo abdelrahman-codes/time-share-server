@@ -77,7 +77,7 @@ class ReservationService {
       .sort('-createdAt');
     if (forMobile) {
       data = data.map((ele) => {
-        ele.usage = ele.usage.replace('-', '+');
+        ele.usage = parseInt(ele.usage.replace('-', ''));
         return ele;
       });
     }
