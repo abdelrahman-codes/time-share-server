@@ -3,7 +3,9 @@ class ReservationController {
   async getAll(req, res, next) {
     try {
       const _id = req.params._id || req.token.sub;
-      const data = await ReservationService.getAll(_id);
+      let forMobile = true;
+      if (req?.params?._id) forMobile = false;
+      const data = await ReservationService.getAll(_id, forMobile);
       return res.sendResponse(data);
     } catch (error) {
       next(error);

@@ -68,11 +68,19 @@ class ReservationService {
     );
     return 'reservation canceled successfully';
   }
-  async getAll(leadId) {
-    const data = await Reservation.find({ leadId })
+  async getAll(leadId, forMobile = false) {
+    let query = { leadId };
+    if (forMobile) query = { ...query, location: { $ne: 'Available Credit to Use' } };
+    let data = await Reservation.find(query)
       .select('reservationDate location usage status createdBy canEdit')
       .populate('createdBy', 'name url')
       .sort('-createdAt');
+    if (forMobile) {
+      data = data.map((ele) => {
+        ele.usage = ele.usage.replace('-', '+');
+        return ele;
+      });
+    }
     return data;
   }
 }
