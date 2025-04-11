@@ -37,7 +37,7 @@ const upload = (allowedFormats) => {
 
 // Export different upload configurations
 module.exports = {
-  uploadImage: () => upload(['jpeg', 'jpg', 'png']),
+  uploadImage: () => upload(['jpeg', 'jpg', 'png','heic','webp', 'gif', 'bmp', 'tiff']),
   uploadDocs: () => upload(['pdf', 'doc', 'docx', 'xls', 'xlsx']),
   uploadAll: () => upload(['jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx']),
 };
