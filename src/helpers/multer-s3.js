@@ -28,9 +28,9 @@ const upload = (allowedFormats) => {
       const mimetype = filetypes.test(file.mimetype);
 
       if (extname && mimetype) {
-        return cb(null, true);
       }
-      cb(ErrorHandler.badRequest({}, 'Invalid file type'));
+      return cb(null, true);
+      // cb(ErrorHandler.badRequest({}, 'Invalid file type'));
     },
   });
 };
