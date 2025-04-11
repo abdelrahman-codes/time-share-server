@@ -5,6 +5,7 @@ const notificationMediumEnum = {
 };
 const notificationTypeEnum = {
   ReservationRequest: 'Reservation Request',
+  ContactRequest: 'Contact Request',
   Payment: 'Payment',
   AssignedTicket: 'Assigned Ticket',
   InstallmentReminder: 'Reminder',

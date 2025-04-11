@@ -141,10 +141,20 @@ const updateFcmTokenDto = {
   }),
 };
 
+const contactUsDto = {
+  body: Joi.object().keys({
+    message: Joi.string().required(),
+    mobileNumber: Joi.string().optional(),
+    timeShareLocation: Joi.string().optional(),
+    name: Joi.string().optional(),
+  }),
+};
+
 module.exports = {
   createDto,
   updateDto,
   get,
   updateMyDateDto,
   updateFcmTokenDto,
+  contactUsDto,
 };

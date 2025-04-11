@@ -5,6 +5,7 @@ const ErrorHandler = require('../../../../enums/errors');
 const Roles = require('../../../../enums/roles');
 const deleteFile = require('../../../../helpers/delete-file');
 const User = require('../user/User.entity');
+const Ticket = require('../ticket/Ticket.entity');
 const {
   TicketStatusEnum,
   NationalityEnum,
@@ -16,6 +17,7 @@ const { GenerateRandomString } = require('../../../../utils');
 const { PaginateHelper } = require('../../../../helpers');
 const { ValidationTypes } = require('../../../../enums/error-types');
 const { ContractPaymentMethodEnum } = require('../../../../enums/contract');
+const { notificationTypeEnum } = require('../../../../enums/notification');
 class LeadService {
   async create(data) {
     const user = await User.findOne({ mobile: data.mobile });
@@ -95,7 +97,7 @@ class LeadService {
       throw ErrorHandler.badRequest({}, 'First Name Missing: Please provide a first name for this user to proceed.');
     if (!user.lastName)
       throw ErrorHandler.badRequest({}, 'Last Name Missing: Please provide a last name for this user to proceed.');
-    
+
     const ContractService = require('../contract/services/Contract.Service');
     const hasContract = await ContractService.getDetails(_id);
     if (!hasContract)
@@ -161,6 +163,21 @@ class LeadService {
     const user = await User.findOneAndDelete({ _id, role: Roles.Lead });
     if (!user) throw ErrorHandler.unauthorized();
     return 'User deleted successfully';
+  }
+  async contactUs(data) {
+    const NotificationService = require('../notification/Notification.Service');
+    await User.findOneAndUpdate({ _id: data.leadId }, { ticketStatus: TicketStatusEnum.Pending });
+    const ticket = new Ticket(data);
+    await ticket.save();
+    const notification = {
+      type: notificationTypeEnum.ContactRequest,
+      message: `New contact Request`,
+      refPage: `/leads/${data.leadId}`,
+      sender: data.leadId,
+      forAllAdmins: true,
+    };
+    await NotificationService.create(notification);
+    return "Sent successfully";
   }
 }
 module.exports = new LeadService();

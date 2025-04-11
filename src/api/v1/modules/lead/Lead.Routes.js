@@ -63,4 +63,10 @@ router.patch(
   ValidationMiddleware(LeadDto.updateFcmTokenDto),
   LeadController.updateFcmToken,
 );
+router.post(
+  '/contact-us',
+  AuthMiddleware([Roles.Lead]),
+  ValidationMiddleware(LeadDto.contactUsDto),
+  LeadController.contactUs,
+);
 module.exports = router;

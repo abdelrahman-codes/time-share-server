@@ -1,6 +1,7 @@
 const logger = require('../../../../config/logger');
 const { MobileAppRequestEnum } = require('../../../../enums/lead');
 const Roles = require('../../../../enums/roles');
+const { TicketStatusEnum } = require('../../../../enums/ticket');
 const { OnlyUniqueUtility } = require('../../../../utils');
 const LeadService = require('./Lead.Service');
 class LeadController {
@@ -120,6 +121,21 @@ class LeadController {
       let _id = req.token.sub;
       await LeadService.update(_id, req.body);
       return res.sendResponse('Fsm Token updated successfully');
+    } catch (error) {
+      next(error);
+    }
+  }
+  async contactUs(req, res, next) {
+    try {
+      req.body.createdBy = req.token.sub;
+      req.body.leadId = req.token.sub;
+      req.body.status = TicketStatusEnum.InProgress;
+      req.body.notes = {
+        content: req.body.message,
+        createdBy: req.token.sub,
+      };
+      const data = await LeadService.contactUs(req.body);
+      return res.sendResponse(data);
     } catch (error) {
       next(error);
     }
