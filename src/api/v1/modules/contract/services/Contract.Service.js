@@ -66,8 +66,8 @@ class ContractService {
       if (!result.villageId?.url) result.village.url = null;
       delete result.villageId;
     }
-    if(!result?.contractNumber)result.contractNumber='null'
-    if(!result?.clientFrom)result.clientFrom='null'
+    if(!result?.contractNumber)result.contractNumber=null
+    if(!result?.clientFrom)result.clientFrom=null
 
     return result;
   }
