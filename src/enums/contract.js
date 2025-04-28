@@ -23,8 +23,8 @@ const PackageTypeEnum = {
   Golden: 'Golden',
 };
 const ClientFromEnum = {
-  Gargada: 'الغردقة',
-  Saudi: 'السعودية',
+  Gargada: 'الغردقه',
+  Saudi: 'السعوديه',
   mohandeseen: 'المهندسين',
   AhlMasr: 'مركب ممشي اهل مصر',
   ArdElGolf: 'ارض الجولف',
