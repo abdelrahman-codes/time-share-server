@@ -22,10 +22,20 @@ const PackageTypeEnum = {
   Diamond: 'Diamond',
   Golden: 'Golden',
 };
+const ClientFromEnum = {
+  Gargada: 'الغردقة',
+  Saudi: 'السعودية',
+  mohandeseen: 'المهندسين',
+  AhlMasr: 'مركب ممشي اهل مصر',
+  ArdElGolf: 'ارض الجولف',
+  Roxy: 'روكسي',
+};
+
 module.exports = {
   ContractPaymentMethodEnum,
   ContractMembershipTypeEnum,
   installmentsTypeEnum,
   ContractPaidStatusEnum,
   PackageTypeEnum,
+  ClientFromEnum,
 };
