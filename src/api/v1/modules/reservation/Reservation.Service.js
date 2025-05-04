@@ -70,16 +70,21 @@ class ReservationService {
   }
   async getAll(leadId, forMobile = false) {
     let query = { leadId };
-    if (forMobile) query = { ...query, location: { $ne: 'Available Credit to Use' } };
     let data = await Reservation.find(query)
       .select('reservationDate location usage status createdBy canEdit')
       .populate('createdBy', 'name url')
       .sort('-createdAt');
     if (forMobile) {
-      data = data.map((ele) => {
-        ele.usage = parseInt(ele.usage.replace('-', ''));
-        return ele;
-      });
+      const totalUsage = data.reduce((sum, reservation) => {
+        return sum + parseInt(reservation.usage, 10);
+      }, 0);
+
+      const totalBookedNights = totalUsage < 0 ? Math.abs(totalUsage) : 0;
+
+      data = {
+        totalBookedNights,
+        logs: data,
+      };
     }
     return data;
   }
