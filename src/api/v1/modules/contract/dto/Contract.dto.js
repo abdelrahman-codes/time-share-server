@@ -88,16 +88,7 @@ const create = {
     individuals: Joi.number().valid(2, 4, 6, 8).required(),
     unitType: Joi.string().valid('A', 'B', 'C').required(),
     contractDate: Joi.string().custom(date).required(),
-    clientFrom: Joi.string()
-      .valid(
-        ClientFromEnum.AhlMasr,
-        ClientFromEnum.ArdElGolf,
-        ClientFromEnum.Gargada,
-        ClientFromEnum.Roxy,
-        ClientFromEnum.Saudi,
-        ClientFromEnum.mohandeseen,
-      )
-      .required(),
+    clientFrom: Joi.string().required(),
     contractNumber: Joi.string().required(),
   }),
 };
