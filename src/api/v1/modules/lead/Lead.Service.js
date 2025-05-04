@@ -14,7 +14,7 @@ const {
   UserCategoryEnum,
 } = require('../../../../enums/lead');
 const { GenerateRandomString } = require('../../../../utils');
-const { PaginateHelper } = require('../../../../helpers');
+const { PaginateHelper, PaginateAggregateHelper } = require('../../../../helpers');
 const { ValidationTypes } = require('../../../../enums/error-types');
 const { ContractPaymentMethodEnum } = require('../../../../enums/contract');
 const { notificationTypeEnum } = require('../../../../enums/notification');
@@ -45,8 +45,8 @@ class LeadService {
     await lead.save();
     return lead.toObject();
   }
-  async getAll(query, options) {
-    return await PaginateHelper(User, query, options);
+  async getAll(pipeline, options) {
+    return await PaginateAggregateHelper(User, pipeline, options);
   }
   async getDetails(_id, returnContract = false) {
     const user = await User.findOne({ role: Roles.Lead, _id });

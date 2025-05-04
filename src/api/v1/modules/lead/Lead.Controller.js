@@ -24,9 +24,15 @@ class LeadController {
         category = req.query.category || '',
         getFrom = req.query.getFrom || '';
 
+      const options = {
+        page,
+        limit,
+        select: 'name url ticketStatus',
+        sort: { createdAt: -1 },
+      };
+
       let query = {
         role: Roles.Lead,
-        name: { $regex: searchTerm, $options: 'i' },
         ...(category &&
           (Array.isArray(category) ? { category: { $in: category } } : { category: { $regex: category, $options: 'i' } })),
         ...(contactMethod &&
@@ -36,6 +42,12 @@ class LeadController {
         ...(getFrom &&
           (Array.isArray(getFrom) ? { getFrom: { $in: getFrom } } : { getFrom: { $regex: getFrom, $options: 'i' } })),
       };
+
+      if (searchTerm.startsWith(':')) {
+        query['contract.contractNumber'] = searchTerm.slice(1);
+      } else {
+        query.$or = [{ name: { $regex: searchTerm, $options: 'i' } }, { mobile: { $regex: searchTerm, $options: 'i' } }];
+      }
 
       if (Array.isArray(req.query.mobileAppRequest)) {
         let username = req.query.mobileAppRequest.filter(OnlyUniqueUtility);
@@ -48,14 +60,19 @@ class LeadController {
         query.username = username;
       }
 
-      const options = {
-        page,
-        limit,
-        select: 'name url ticketStatus',
-        sort: '-createdAt',
-      };
+      const pipeline = [
+        { $lookup: { from: 'contracts', localField: '_id', foreignField: 'leadId', as: 'contract' } },
+        { $match: query },
+        {
+          $project: {
+            name: 1,
+            url: 1,
+            ticketStatus: 1,
+          },
+        },
+      ];
 
-      const data = await LeadService.getAll(query, options);
+      const data = await LeadService.getAll(pipeline, options);
       return res.sendResponse(data);
     } catch (error) {
       next(error);
