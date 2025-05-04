@@ -24,16 +24,21 @@ class DashboardService {
     }
 
     const totalContract = await Contract.countDocuments(query);
-    const contracts = await Contract.find(query, { totalAmount: 1 });
+    const contracts = await Contract.find(
+      { paymentMethod: ContractPaymentMethodEnum.Installments, ...query },
+      { totalAmount: 1, downPayment: 1 },
+    );
     const cashContracts = await Contract.find(
       { paymentMethod: ContractPaymentMethodEnum.Cash, ...query },
       { totalAmount: 1 },
     );
     const totalCashContractAmount = cashContracts.reduce((sum, contract) => sum + contract.totalAmount, 0);
     const totalContractAmount = contracts.reduce((sum, contract) => sum + contract.totalAmount, 0) + totalCashContractAmount; // Sum all contract amounts
+    const totalDownPaymentAmount = contracts.reduce((sum, contract) => sum + contract.downPayment, 0);
 
     const payments = await Payment.find(paymentQuery, { amount: 1 });
-    const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0) + totalCashContractAmount;
+    const totalPaid =
+      payments.reduce((sum, payment) => sum + payment.amount, 0) + totalCashContractAmount + totalDownPaymentAmount;
 
     const totalRemainingAmount = Math.max(0, totalContractAmount - totalPaid);
 
