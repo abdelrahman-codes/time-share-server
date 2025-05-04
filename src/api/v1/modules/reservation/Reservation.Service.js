@@ -75,12 +75,15 @@ class ReservationService {
       .populate('createdBy', 'name url')
       .sort('-createdAt');
     if (forMobile) {
-      const totalUsage = data.reduce((sum, reservation) => {
-        return sum + parseInt(reservation.usage, 10);
-      }, 0);
-
-      const totalBookedNights = totalUsage < 0 ? Math.abs(totalUsage) : 0;
-
+      let totalBookedNights = 0;
+      data.map((ele) => {
+        if (ele.usage.startsWith('-')) {
+          totalBookedNights += Number(ele.usage.slice(1));
+        }
+        if (ele.status === 'Canceled') {
+          totalBookedNights -= Number(ele.usage.slice(1));
+        }
+      });
       data = {
         totalBookedNights,
         logs: data,
