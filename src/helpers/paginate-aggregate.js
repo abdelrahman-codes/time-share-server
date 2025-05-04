@@ -17,13 +17,10 @@ async function paginateAggregate(model, pipeline = [], options = {}) {
   paginatedPipeline.push({ $skip: (currentPage - 1) * itemsPerPage }, { $limit: itemsPerPage });
 
   // Create a separate count pipeline (without pagination)
-  const countPipeline = [...pipeline, { $count: "totalItems" }];
+  const countPipeline = [...pipeline, { $count: 'totalItems' }];
 
   // Execute both aggregation pipelines
-  const [results, countResult] = await Promise.all([
-    model.aggregate(paginatedPipeline),
-    model.aggregate(countPipeline),
-  ]);
+  const [results, countResult] = await Promise.all([model.aggregate(paginatedPipeline), model.aggregate(countPipeline)]);
 
   // Extract totalItems safely
   const totalItems = countResult.length > 0 ? countResult[0].totalItems : 0;

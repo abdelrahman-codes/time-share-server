@@ -27,7 +27,6 @@ class LeadController {
       const options = {
         page,
         limit,
-        select: 'name url ticketStatus',
         sort: { createdAt: -1 },
       };
 
@@ -68,6 +67,7 @@ class LeadController {
             name: 1,
             url: 1,
             ticketStatus: 1,
+            createdAt:1,
           },
         },
       ];
