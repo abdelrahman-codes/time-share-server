@@ -31,6 +31,10 @@ const ClientFromEnum = {
   Roxy: 'روكسي',
 };
 
+const ContractCountriesEnum={
+  Saudi:'Saudi arabia',
+  Egypt:"Egypt"
+}
 module.exports = {
   ContractPaymentMethodEnum,
   ContractMembershipTypeEnum,
@@ -38,4 +42,5 @@ module.exports = {
   ContractPaidStatusEnum,
   PackageTypeEnum,
   ClientFromEnum,
+  ContractCountriesEnum,
 };

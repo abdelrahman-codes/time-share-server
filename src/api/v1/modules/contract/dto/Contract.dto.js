@@ -6,11 +6,12 @@ const {
   installmentsTypeEnum,
   PackageTypeEnum,
   ClientFromEnum,
+  ContractCountriesEnum
 } = require('../../../../../enums/contract');
 const create = {
   body: Joi.object().keys({
     leadId: Joi.string().custom(isValidObjectId).required(),
-
+    country:Joi.string().valid(ContractCountriesEnum.Egypt,ContractCountriesEnum.Saudi).optional(),
     paymentMethod: Joi.string().valid(ContractPaymentMethodEnum.Cash, ContractPaymentMethodEnum.Installments).required(),
     totalAmount: Joi.number().min(1).required(),
 

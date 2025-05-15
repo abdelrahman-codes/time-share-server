@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ContractCountriesEnum } = require('../../../../../enums/contract');
 
 const contractSchema = mongoose.Schema(
   {
@@ -6,6 +7,7 @@ const contractSchema = mongoose.Schema(
     contractPaidStatus: { type: String, trim: true },
     isCustomPackage: { type: Boolean, default: false },
     clientFrom: { type: String, trim: true },
+    country: { type: String, trim: true ,default:ContractCountriesEnum.Egypt},
     contractNumber: { type: String, trim: true },
 
     totalAmount: { type: Number },
