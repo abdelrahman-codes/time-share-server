@@ -16,7 +16,7 @@ const createDto = {
     whatsappMobileNumber: Joi.string().optional(),
     nationalId: Joi.string().optional(),
     email: Joi.string().custom(email).optional(),
-    nationality: Joi.string().optional().valid(NationalityEnum.Egyptian, NationalityEnum.Foreign),
+    nationality: Joi.string().optional().valid(NationalityEnum.Egyptian, NationalityEnum.Foreign,NationalityEnum.Saudi),
     address: Joi.string().optional(),
     contactMethod: Joi.string()
       .valid(ContactMethodEnum.Facebook, ContactMethodEnum.Google, ContactMethodEnum.Manual, ContactMethodEnum.Website)
@@ -41,7 +41,7 @@ const updateDto = {
       nationalId: Joi.string().optional(),
       whatsappMobileNumber: Joi.string().optional(),
       email: Joi.string().custom(email).optional(),
-      nationality: Joi.string().optional().valid(NationalityEnum.Egyptian, NationalityEnum.Foreign),
+      nationality: Joi.string().optional().valid(NationalityEnum.Egyptian, NationalityEnum.Foreign,NationalityEnum.Saudi),
       address: Joi.string().optional(),
       contactMethod: Joi.string()
         .valid(ContactMethodEnum.Facebook, ContactMethodEnum.Google, ContactMethodEnum.Manual, ContactMethodEnum.Website)

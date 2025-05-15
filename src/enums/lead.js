@@ -26,6 +26,7 @@ const MobileAppRequestEnum = {
 const NationalityEnum = {
   Egyptian: 'Egyptian',
   Foreign: 'Foreign',
+  Saudi:'Saudi',
 };
 
 const TicketStatusEnum = {
